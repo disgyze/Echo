@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Echo.Core\Echo.Core.csproj" />
+    <ProjectReference Include="..\Echo.Foundation\Echo.Foundation.csproj" />
+  </ItemGroup>
+
+</Project>
