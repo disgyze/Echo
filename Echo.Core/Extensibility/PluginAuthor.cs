@@ -1,5 +1,4 @@
 ﻿using System;
-using Echo.Xmpp;
 
 namespace Echo.Core.Extensibility
 {
@@ -7,9 +6,9 @@ namespace Echo.Core.Extensibility
     {
         public string Name { get; }
         public Uri? Email { get; }
-        public XmppAddress? XmppAddress { get; }
+        public Uri? XmppAddress { get; }
 
-        public PluginAuthor(string name, Uri email, XmppAddress address)
+        public PluginAuthor(string name, Uri? email, Uri? address)
         {
             Name = name;
             Email = email;

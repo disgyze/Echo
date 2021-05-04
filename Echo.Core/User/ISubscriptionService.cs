@@ -1,13 +1,13 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
-using Echo.Xmpp;
 
 namespace Echo.Core.User
 {
     public interface ISubscriptionService
     {
-        Task<bool> AcceptAsync(XmppAddress address, CancellationToken cancellationToken = default);
-        Task<bool> DeclineAsync(XmppAddress address, CancellationToken cancellationToken = default);
-        Task<bool> SubscribeAsync(XmppAddress address, CancellationToken cancellationToken = default);      
+        Task<bool> AcceptAsync(XmppUri address, CancellationToken cancellationToken = default);
+        Task<bool> DeclineAsync(XmppUri address, CancellationToken cancellationToken = default);
+        Task<bool> SubscribeAsync(XmppUri address, CancellationToken cancellationToken = default);      
     }
 }

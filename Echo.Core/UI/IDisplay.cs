@@ -1,4 +1,6 @@
-﻿namespace Echo.Core.UI
+﻿using System;
+
+namespace Echo.Core.UI
 {
     public interface IDisplay
     {

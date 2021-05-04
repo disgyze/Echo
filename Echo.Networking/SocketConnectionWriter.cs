@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Echo.Networking
 {
-    public sealed class SocketWriter : IDisposable, IAsyncDisposable
+    public sealed class SocketConnectionWriter : IAsyncDisposable, IDisposable
     {
         bool disposed = false;
         Socket? socket = null;
         Stream? stream = null;
-        CancellationTokenSource cancellationTokenSource = null;
+        CancellationTokenSource? cancellationTokenSource = null;
 
         public bool IsRunning
         {
@@ -20,7 +20,7 @@ namespace Echo.Networking
             private set;
         }
 
-        public SocketWriter(Socket socket, Stream? stream = null)
+        public SocketConnectionWriter(Socket socket, Stream? stream = null)
         {
             if (socket == null) throw new ArgumentNullException(nameof(socket));
 
@@ -28,7 +28,7 @@ namespace Echo.Networking
             this.stream = stream ?? new NetworkStream(socket);
         }
 
-        ~SocketWriter()
+        ~SocketConnectionWriter()
         {
             Dispose(false);
         }
@@ -59,7 +59,7 @@ namespace Echo.Networking
             return default;
         }
 
-        public void Start(ConcurrentQueue<ReadOnlyMemory<byte>> queue, Action<SocketException> onError = null)
+        public void Start(ConcurrentQueue<ReadOnlyMemory<byte>> queue, Action<SocketException>? onError = null)
         {
             if (queue == null) throw new ArgumentNullException(nameof(queue));
 
@@ -75,27 +75,16 @@ namespace Echo.Networking
                 {
                     TimeSpan delay = TimeSpan.FromMilliseconds(10);
 
-                    while (socket.Connected)
+                    while (socket.Connected && !cancellationTokenSource.IsCancellationRequested)
                     {
-                        if (cancellationTokenSource.IsCancellationRequested)
+                        while (queue.Count > 0 && !cancellationTokenSource.IsCancellationRequested)
                         {
-                            return;
-                        }
-
-                        while (queue.Count > 0)
-                        {
-                            if (cancellationTokenSource.IsCancellationRequested)
-                            {
-                                return;
-                            }
-
                             if (queue.TryDequeue(out var data))
                             {
                                 stream.Write(data.Span);
                                 stream.Flush();
                             }
                         }
-
                         Thread.Sleep(delay);
                     }
                 }
@@ -129,7 +118,7 @@ namespace Echo.Networking
         {
             if (disposed)
             {
-                throw new ObjectDisposedException(nameof(SocketWriter));
+                throw new ObjectDisposedException(nameof(SocketConnectionWriter));
             }
         }
     }

@@ -1,11 +1,9 @@
-﻿using Echo.Xmpp;
-
-namespace Echo.Core.Messaging
+﻿namespace Echo.Core.Messaging
 {
     public interface IChannelMember
     {
-        IChannel Room { get; }
-        XmppAddress Address { get; }
+        IChannel Channel { get; }
+        XmppUri Address { get; }
         string Nickname { get; }
     }
 }

@@ -302,7 +302,7 @@ namespace Echo.Xmpp.Parser
             }
             catch (XmlException e)
             {
-                OnParsingError(new XmppParsingFailedEventArgs(e));
+                OnParsingFailed(new XmppParsingFailedEventArgs(e));
             }
             finally
             {

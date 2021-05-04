@@ -1,7 +1,8 @@
 ﻿namespace Echo.Core.Metadata
 {
-    public interface IMetadataFactory
+    public interface IMetadataService
     {
         T Create<T>() where T : IMetadata;
+        IMetadataService Register<T>();
     }
 }

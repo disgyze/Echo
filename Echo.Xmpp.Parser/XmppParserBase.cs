@@ -4,11 +4,11 @@ namespace Echo.Xmpp.Parser
 {
     public abstract class XmppParserBase : IXmppParser
     {
-        public event EventHandler StreamStarted;
-        public event EventHandler StreamClosed;
-        public event EventHandler BufferOverflowError;
-        public event EventHandler<XmppParsingFailedEventArgs> ParsingFailed;
-        public event EventHandler<XmppElementEventArgs> ElementParsed;
+        public event EventHandler? StreamStarted;
+        public event EventHandler? StreamClosed;
+        public event EventHandler? BufferOverflowError;
+        public event EventHandler<XmppParsingFailedEventArgs>? ParsingFailed;
+        public event EventHandler<XmppElementEventArgs>? ElementParsed;
 
         public int Depth
         {
@@ -37,7 +37,7 @@ namespace Echo.Xmpp.Parser
             BufferOverflowError?.Invoke(this, EventArgs.Empty);
         }
 
-        protected virtual void OnParsingError(XmppParsingFailedEventArgs e)
+        protected virtual void OnParsingFailed(XmppParsingFailedEventArgs e)
         {
             ParsingFailed?.Invoke(this, e);
         }

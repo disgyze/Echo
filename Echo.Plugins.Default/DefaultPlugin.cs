@@ -20,6 +20,7 @@ namespace Echo.Plugins.Default
         DisposableContainer subscriptionContainer = null;
 
         public string Name => throw new NotImplementedException();
+        public string Version => throw new NotImplementedException();
         public string Description => throw new NotImplementedException();
         public Uri Website => throw new NotImplementedException();
         public PluginAuthor Author => throw new NotImplementedException();

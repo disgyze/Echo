@@ -14,8 +14,4 @@
     <ProjectReference Include="..\Echo.Xmpp\Echo.Xmpp.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Client\" />
-  </ItemGroup>
-
 </Project>
