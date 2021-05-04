@@ -52,7 +52,7 @@ namespace Echo.Networking
             GC.SuppressFinalize(this);
         }
 
-        public async ValueTask StartAsync(Action<byte[]> onData, Action<Exception>? onError = null, CancellationToken cancellationToken = default)
+        public async Task StartAsync(Action<byte[]> onData, Action<Exception>? onError = null, CancellationToken cancellationToken = default)
         {
             ThrowIfDisposed();
 
@@ -63,7 +63,7 @@ namespace Echo.Networking
 
             if (cancellationToken.IsCancellationRequested)
             {
-                await ValueTask.FromCanceled(cancellationToken).ConfigureAwait(false);
+                await Task.FromCanceled(cancellationToken).ConfigureAwait(false);
             }
 
             cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);

@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Buffers;
 
 namespace Echo.Networking
 {
@@ -12,8 +7,8 @@ namespace Echo.Networking
     {
         private enum Socks4ProxyCommand : byte
         {
-            StreamConnection = 1,
-            PortBinding = 2
+            Connect = 1,
+            Bind = 2
         }
 
         private enum Socks4ProxyReply : byte
@@ -41,8 +36,8 @@ namespace Echo.Networking
                 byte[] request = new byte[header.Length + address.Length + port.Length];
 
                 Buffer.BlockCopy(header, 0, request, 0, header.Length);
-                Buffer.BlockCopy(address, 0, request, header.Length, address.Length);
-                Buffer.BlockCopy(port, 0, request, address.Length, port.Length);
+                Buffer.BlockCopy(port, 0, request, header.Length, port.Length);
+                Buffer.BlockCopy(address, 0, request, header.Length + port.Length, address.Length);
 
                 return request;
             }
@@ -61,17 +56,19 @@ namespace Echo.Networking
 
             public static Socks4ProxyResponse FromByteArray(byte[] array)
             {
-                byte version = array[0];
-                byte reply = array[1];
+                byte[] header = new byte[2];
                 byte[] port = new byte[2];
                 byte[] address = new byte[4];
 
-                Buffer.BlockCopy(array, 2, port, 0, port.Length);
-                Buffer.BlockCopy(array, 2 + port.Length, address, 0, address.Length);
+                Buffer.BlockCopy(array, 0, header, 0, header.Length);
+                Buffer.BlockCopy(array, header.Length, port, 0, port.Length);
+                Buffer.BlockCopy(array, header.Length + port.Length, address, 0, address.Length);
 
-                return new Socks4ProxyResponse(
-                    new IPEndPoint(new IPAddress(address), BitConverter.ToInt32(port)), 
-                    (Socks4ProxyReply)reply);
+                Socks4ProxyReply reply = (Socks4ProxyReply)header[1];
+                IPAddress destAddress = new IPAddress(address);
+                int destPort = BitConverter.ToInt32(port);
+
+                return new Socks4ProxyResponse(new IPEndPoint(destAddress, destPort), reply);
             }
         }
     }
