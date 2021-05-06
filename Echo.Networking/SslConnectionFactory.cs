@@ -25,20 +25,9 @@ namespace Echo.Networking
 
         public static async ValueTask<SocketConnection> UpgradeAsync(SocketConnection connection, SslClientAuthenticationOptions sslOptions, CancellationToken cancellationToken = default)
         {
-            if (connection == null)
-            {
-                throw new ArgumentNullException(nameof(connection));
-            }
-
-            if (sslOptions == null)
-            {
-                throw new ArgumentNullException(nameof(sslOptions));
-            }
-
-            if (cancellationToken.IsCancellationRequested)
-            {
-                await ValueTask.FromCanceled(cancellationToken).ConfigureAwait(false);
-            }
+            if (connection == null) throw new ArgumentNullException(nameof(connection));
+            if (sslOptions == null) throw new ArgumentNullException(nameof(sslOptions));
+            cancellationToken.ThrowIfCancellationRequested();
 
             SslStream sslStream = new SslStream(connection.Stream);
             await sslStream.AuthenticateAsClientAsync(sslOptions, cancellationToken).ConfigureAwait(false);

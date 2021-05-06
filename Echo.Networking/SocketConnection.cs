@@ -38,27 +38,34 @@ namespace Echo.Networking
             return CloseAsync(SocketConnectionCloseMethod.GracefulShutdown);
         }
 
-        public async ValueTask CloseAsync(SocketConnectionCloseMethod closeMethod, CancellationToken cancellationToken = default)
+        public ValueTask CloseAsync(SocketConnectionCloseMethod closeMethod, CancellationToken cancellationToken = default)
         {
             if (cancellationToken.IsCancellationRequested)
             {
-                await ValueTask.FromCanceled(cancellationToken).ConfigureAwait(false);
+                return ValueTask.FromCanceled(cancellationToken);
             }
 
             if (!disposed)
             {
-                if (closeMethod == SocketConnectionCloseMethod.GracefulShutdown)
+                try
                 {
-                    Socket.Shutdown(SocketShutdown.Both);
+                    if (closeMethod != SocketConnectionCloseMethod.GracefulShutdown)
+                    {
+                        Socket.Dispose();
+                    }
+                    Stream.Dispose();
                 }
-
-                await Socket.DisconnectTaskAsync().ConfigureAwait(false);
-
-                Socket.Dispose();
-                Stream.Dispose();
-
-                disposed = true;
+                catch (Exception e)
+                {
+                    return ValueTask.FromException(e);
+                }
+                finally
+                {
+                    disposed = true;
+                }
             }
+
+            return default;
         }
     }
 }

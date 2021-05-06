@@ -13,31 +13,33 @@ namespace Echo.Networking
         SocketType socketType;
         ProtocolType protocolType;
         AddressFamily addressFamily;
-        TimeSpan timeout;
 
-        public SocketConnectionFactory(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType, TimeSpan timeout)
+        public SocketConnectionFactory(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
         {
             this.addressFamily = addressFamily;
             this.socketType = socketType;
             this.protocolType = protocolType;
-            this.timeout = timeout;
         }
 
         public override async ValueTask<SocketConnection> OpenAsync(EndPoint endPoint, CancellationToken cancellationToken = default)
         {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                await ValueTask.FromCanceled(cancellationToken);
-            }
+            if (endPoint == null) throw new ArgumentNullException(nameof(endPoint));
+            cancellationToken.ThrowIfCancellationRequested();
 
             Socket socket = new Socket(addressFamily, socketType, protocolType);
-            socket.NoDelay = true;
+            socket.NoDelay = protocolType == ProtocolType.Tcp;
             socket.DualMode = addressFamily == AddressFamily.InterNetworkV6;
-            socket.SendTimeout = (int)timeout.TotalMilliseconds;
-            socket.ReceiveTimeout = (int)timeout.TotalMilliseconds;
-            await socket.ConnectTaskAsync(endPoint).ConfigureAwait(false);
 
-            return new SocketConnection(socket);
+            try
+            {
+                await socket.ConnectTaskAsync(endPoint).ConfigureAwait(false);
+                return new SocketConnection(socket);
+            }
+            catch
+            {
+                socket.Dispose();
+                throw;
+            }
         }
     }
 }
