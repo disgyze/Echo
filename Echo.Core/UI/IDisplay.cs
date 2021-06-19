@@ -1,10 +1,9 @@
-﻿using System;
-
-namespace Echo.Core.UI
+﻿namespace Echo.Core.UI
 {
     public interface IDisplay
     {
         void Clear();
+        void ShowEcho(string text);
         void ShowOther(string text);
         void ShowError(string text);
         void ShowConnectionInfo(string text);
@@ -15,5 +14,6 @@ namespace Echo.Core.UI
         void ShowChatAction(string sender, string target, string text);
         void ShowChannelAction(string channel, string sender, string text);
         void ShowChannelMessage(string channel, string sender, string text);
+        void ShowChannelInvite(string user, string channel, string? reason = null);
     }
 }

@@ -11,7 +11,7 @@ namespace Echo.Core.Extensibility
         Uri Website { get; }
         PluginAuthor Author { get; }
 
-        Task OnLoadAsync(IServiceProvider serviceProvider);
-        Task OnUnloadAsync();
+        ValueTask OnLoadAsync(IServiceProvider serviceProvider);
+        ValueTask OnUnloadAsync();
     }
 }

@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System.Threading.Tasks;
 
 namespace Echo.Core.Messaging
 {
     public interface IMixChannel : IChannel
     {
-        new IMixChannelMember Me { get; }
-        new IReadOnlyList<IMixChannelMember> Members { get; }
+        ValueTask<bool> BanAsync(string nick, string? reason = null);
     }
 }

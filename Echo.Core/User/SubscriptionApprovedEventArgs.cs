@@ -1,5 +1,5 @@
 ﻿using System;
-using Echo.Core.Client;
+using Echo.Core.Connections;
 
 namespace Echo.Core.User
 {

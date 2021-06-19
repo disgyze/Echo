@@ -6,7 +6,7 @@ namespace Echo.Core.User
     public interface IContact
     {
         Guid Id { get; }
-        Uri Address { get; }
+        XmppUri Address { get; }
         bool IsMetaContact { get; }
         bool IsLinked { get; }
         IAccount Account { get; }

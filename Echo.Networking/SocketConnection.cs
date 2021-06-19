@@ -16,7 +16,7 @@ namespace Echo.Networking
         public SocketConnection(Socket socket, Stream? stream = null)
         {
             Socket = socket;
-            Stream = stream ?? new NetworkStream(socket);
+            Stream = stream ?? new NetworkStream(socket, true);
         }
 
         public void Dispose()

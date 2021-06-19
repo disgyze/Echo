@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Echo.Core.Client;
+using Echo.Core.Connections;
 
 namespace Echo.Core.Capabilities
 {

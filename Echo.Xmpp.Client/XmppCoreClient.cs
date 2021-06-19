@@ -71,7 +71,7 @@ namespace Echo.Xmpp.Client
 		{
             XmlElementSent?.Invoke(this, e);
         }
- 
+
 		public XmppCoreClient(ClientSocket socket, IXmppParser parser)
 		{
 			if (socket == null)
@@ -90,10 +90,14 @@ namespace Echo.Xmpp.Client
 			Parser = parser;
 			Parser.ElementParsed += (s, e) => OnElementReceived(new XmppElementEventArgs<XElement>(e.Element));
 			Socket = socket;
-			Socket.DataReceived += (s, e) => parser.Parse(e.Data);
+			Socket.DataReceived += (s, e) =>
+			{
+				parser.Parse(e.Data);
+			};
 		}
 
-		~XmppCoreClient()
+
+        ~XmppCoreClient()
 		{
 			Dispose(false);
 		}

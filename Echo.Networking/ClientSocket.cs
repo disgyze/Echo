@@ -116,7 +116,7 @@ namespace Echo.Networking
             return Task.FromResult(true);
         }
 
-        public async Task<bool> ConnectAsync(EndPoint endpoint, ProxyInformation? proxyInfo = null, CancellationToken cancellationToken = default)
+        public async Task<bool> ConnectAsync(EndPoint endpoint, CancellationToken cancellationToken = default)
         {
             if (cancellationToken.IsCancellationRequested)
             {

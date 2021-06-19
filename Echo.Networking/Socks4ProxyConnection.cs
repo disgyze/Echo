@@ -23,7 +23,7 @@ namespace Echo.Networking
             DifferentUserId = 93
         }
 
-        private struct Socks4ProxyRequest
+        private readonly struct Socks4ProxyRequest
         {
             public string? UserId { get; }
             public IPEndPoint EndPoint { get; }
@@ -47,7 +47,7 @@ namespace Echo.Networking
             }
         }
 
-        private struct Socks4ProxyResponse
+        private readonly struct Socks4ProxyResponse
         {
             public IPEndPoint EndPoint { get; }
             public Socks4ProxyReply Reply { get; }
@@ -82,7 +82,7 @@ namespace Echo.Networking
         {
             this.options = options ?? throw new ArgumentNullException(nameof(options));
 
-            switch (options.EndPoint)
+            switch (options.RemoteEndPoint)
             {
                 case IPEndPoint ipEndPoint:
                 {
@@ -117,7 +117,7 @@ namespace Echo.Networking
 
             var stream = connection.Stream;
 
-            var request = new Socks4ProxyRequest((IPEndPoint)options.EndPoint, Socks4ProxyCommand.Connect);
+            var request = new Socks4ProxyRequest((IPEndPoint)options.RemoteEndPoint, Socks4ProxyCommand.Connect);
             await stream.WriteAsync(request.ToByteArray(), cancellationToken).ConfigureAwait(false);
 
             var responseBytes = new byte[8];

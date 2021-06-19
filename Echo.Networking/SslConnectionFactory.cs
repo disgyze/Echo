@@ -8,8 +8,8 @@ namespace Echo.Networking
 {
     public sealed class SslConnectionFactory : ConnectionFactory
     {
-        ConnectionFactory? connectionFactory = null;
-        SslClientAuthenticationOptions? sslOptions = null;
+        ConnectionFactory connectionFactory = null!;
+        SslClientAuthenticationOptions sslOptions = null!;
 
         public SslConnectionFactory(ConnectionFactory connectionFactory, SslClientAuthenticationOptions sslOptions)
         {
@@ -19,8 +19,8 @@ namespace Echo.Networking
 
         public override async ValueTask<SocketConnection> OpenAsync(EndPoint endPoint, CancellationToken cancellationToken = default)
         {
-            var connection = await connectionFactory!.OpenAsync(endPoint, cancellationToken);
-            return await UpgradeAsync(connection, sslOptions!, cancellationToken).ConfigureAwait(false);
+            var connection = await connectionFactory.OpenAsync(endPoint, cancellationToken);
+            return await UpgradeAsync(connection, sslOptions, cancellationToken).ConfigureAwait(false);
         }
 
         public static async ValueTask<SocketConnection> UpgradeAsync(SocketConnection connection, SslClientAuthenticationOptions sslOptions, CancellationToken cancellationToken = default)

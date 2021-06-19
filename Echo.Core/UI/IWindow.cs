@@ -1,14 +1,16 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using Echo.Core.Extensibility;
 
 namespace Echo.Core.UI
 {
-    public interface IWindow
+    public interface IWindow : ISupportsCommand
     {
+        Guid Id { get; }
         bool IsActive { get; }
         IDisplay Display { get; }
         WindowKind Kind { get; }
 
         void Activate();
-        Task CloseAsync();
+        void Close();
     }
 }

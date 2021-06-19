@@ -1,16 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Echo.Core.Messaging
 {
     public interface IChannel : IConversation
     {
+        int MemberCount { get; }
         bool IsJoined { get; }
         XmppUri Address { get; }
         IChannelMember Me { get; }
-        IReadOnlyList<IChannelMember> Members { get; }
 
-        Task JoinAsync();
-        Task LeaveAsync(string? reason = null);
+        IChannelMember? GetMember(int index);
+        IChannelMember? GetMember(string nick);
+        IChannelMember? GetMember(XmppUri address);
+        ValueTask<bool> JoinAsync(string? password = null);
+        ValueTask<bool> LeaveAsync(string? reason = null);
     }
 }

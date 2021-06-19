@@ -1,125 +1,154 @@
 ﻿using System;
 using System.Text;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Echo.Xmpp
 {
-	public struct XmppAddress : IEquatable<XmppAddress>
+    public sealed class XmppAddress : IEquatable<XmppAddress>
 	{
-		Dictionary<string, string> innerQuery;
-
-		public static readonly XmppAddress Empty;
+        public static readonly string SchemeName = "xmpp";
 
 		public string Name { get; }
-		public string Server { get; }	
+		public string Host { get; }	
 		public string Resource { get; }
-		public IReadOnlyDictionary<string, string> Query => innerQuery;
+		public string Query { get; }
 
-		public XmppAddress(string server)
+		public XmppAddress(string host) : this(string.Empty, host)
 		{
-			if (string.IsNullOrWhiteSpace(server))
-			{
-				throw new ArgumentNullException(nameof(server));
-			}
-			Server = server;
-			Name = string.Empty;
-			Resource = string.Empty;
-			innerQuery = new Dictionary<string, string>();
 		}
 
-		public XmppAddress(string name, string server, string resource = "", IReadOnlyDictionary<string, string> query = null)
+		public XmppAddress(string? name, string host, string? resource = "", string? query = "")
 		{
-            if (string.IsNullOrWhiteSpace(server))
+            if (host == null)
             {
-                throw new ArgumentNullException(nameof(server));
+				throw new ArgumentNullException(nameof(host));
             }
 
-            Server = server;
+			if (host == string.Empty)
+            {
+				throw new ArgumentException("Cannot be empty", nameof(host));
+            }
+
+			Host = host;
             Name = name ?? string.Empty;
             Resource = resource ?? string.Empty;
-            innerQuery = query != null ? new Dictionary<string, string>(query.ToDictionary(x => x.Key, y => y.Value)) : new Dictionary<string, string>();
-        }
-
-		public static XmppAddress Parse(string s)
-		{
-			if (!Uri.IsWellFormedUriString(s, UriKind.RelativeOrAbsolute))
-			{
-				throw new ArgumentException(nameof(s));
-			}
-
-			// TODO Обработать случай, когда адрес содержит схему (xmpp://, xmpp:)
-
-			int atIndex = s.IndexOf('@');
-			int slashIndex = s.IndexOf('/');
-			int exclamationMarkIndex = s.IndexOf('?');
-
-			string name = s.Substring(0, atIndex);
-			string server = slashIndex > 0 ? s.Substring(atIndex + 1, slashIndex - atIndex - 1) : s.Substring(atIndex + 1, s.Length - atIndex - 1);
-			string? resource = slashIndex > 0 ? s.Substring(slashIndex + 1, (exclamationMarkIndex > 0 ? exclamationMarkIndex - slashIndex : s.Length - slashIndex) - 1) : null;
-			string? query = exclamationMarkIndex > 0 ? s.Substring(exclamationMarkIndex + 1, s.Length - exclamationMarkIndex - 1) : null;
-
-			return new XmppAddress(name, server, resource, ParseQuery(query));
+			Query = query ?? string.Empty;
 		}
 
-		public static bool TryParse(string s, out XmppAddress address)
+		public static XmppAddress Create(string s)
 		{
-			address = Empty;
+			if (string.IsNullOrWhiteSpace(s))
+            {
+				throw new ArgumentNullException(nameof(s));
+            }
+
+			int schemeDelimiterIndex = s.IndexOf(Uri.SchemeDelimiter);
+			int schemeOffset = 0;
+
+			if (schemeDelimiterIndex > 0)
+            {
+				string scheme = s.Substring(0, schemeDelimiterIndex);
+
+				if (!scheme.Equals(SchemeName, StringComparison.OrdinalIgnoreCase))
+                {
+					throw new ArgumentException("Invalid scheme name");
+                }
+
+				schemeOffset = scheme.Length + schemeDelimiterIndex;
+            }
+
+			int atIndex = s.IndexOf('@');
+			int slashIndex = s.IndexOf('/', Math.Max(atIndex, 0));
+			int exclamationMarkIndex = s.IndexOf('?', Math.Max(slashIndex, 0));
+
+			string? name = null;
+			string? host = null;
+			string? resource = null;
+			string? query = null;
+
+			//if (atIndex > 0)
+   //         {
+			//	if (schemeOffset > 0)
+   //             {
+			//		name = s.Substring(schemeOffset - 1, atIndex - schemeOffset + 1);
+   //             }
+   //             else
+   //             {
+			//		name = s.Substring(0, atIndex);
+   //             }
+   //         }
+
+			//if (slashIndex > 0)
+   //         {
+			//	if (atIndex > 0)
+   //             {
+			//		server = s.Substring(atIndex + 1, slashIndex - atIndex - 1);
+   //             }
+   //             else
+   //             {
+			//		server = s.Substring(0, s.Length - atIndex - 1);
+   //             }
+   //         }
+
+            name = atIndex > 0 ? s.Substring(Math.Max(schemeOffset - 1, 0), atIndex - (schemeOffset > 0 ? schemeOffset - 1 : 0)) : null;
+            host = slashIndex > 0 ? s.Substring(atIndex + 1, slashIndex - atIndex - 1) : s.Substring(atIndex + 1, s.Length - atIndex - 1);
+            resource = slashIndex > 0 ? s.Substring(slashIndex + 1, (exclamationMarkIndex > 0 ? exclamationMarkIndex - slashIndex : s.Length - slashIndex) - 1) : null;
+            query = exclamationMarkIndex > 0 ? s.Substring(exclamationMarkIndex + 1, s.Length - exclamationMarkIndex - 1) : null;
+
+            if (host == null)
+            {
+				throw new ArgumentException("Invalud URI", nameof(s));
+            }
+
+			return new XmppAddress(name, host, resource, query);
+		}
+
+		public static bool TryCreate(string s, out XmppAddress? address)
+		{
 			try
 			{
-				address = Parse(s);
+				address = Create(s);
 				return true;
 			}
 			catch
 			{
+				address = null;
 				return false;
 			}
 		}
 
-		private static IReadOnlyDictionary<string, string> ParseQuery(string s)
+		public override bool Equals(object? obj)
 		{
-			if (string.IsNullOrEmpty(s))
+			return obj is XmppAddress other && this.Equals(other);
+		}
+
+		public bool Equals(XmppAddress? other)
+		{
+			if (object.ReferenceEquals(other, null))
             {
-				return null;
+				return false;
             }
 
-			var query = s.Split('&');
-			var map = new Dictionary<string, string>();
+			if (object.ReferenceEquals(this, other))
+            {
+				return true;
+            }
 
-			foreach (var pair in query)
-			{
-				string[] parts = pair.Split('=');
-
-				if (parts.Length > 1)
-				{
-					map.Add(parts[0], parts[1]);
-				}
-				else
-				{
-					map.Add(parts[0], string.Empty);
-				}
-			}
-
-			return map;
+			return string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase) && string.Equals(Host, other.Host, StringComparison.OrdinalIgnoreCase) && string.Equals(Resource, other.Resource, StringComparison.OrdinalIgnoreCase);
 		}
 
-		public override bool Equals(object obj)
+		public bool EqualsBare(XmppAddress? other)
 		{
-			if (!(obj is XmppAddress))
-			{
+			if (object.ReferenceEquals(other, null))
+            {
 				return false;
-			}
-			return this == (XmppAddress)obj;
-		}
+            }
 
-		public bool Equals(XmppAddress other)
-		{
-			return string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase) && string.Equals(Server, other.Server, StringComparison.OrdinalIgnoreCase) && string.Equals(Resource, other.Resource, StringComparison.OrdinalIgnoreCase);
-		}
+			if (object.ReferenceEquals(this, other))
+            {
+				return true;
+            }
 
-		public bool EqualsBase(XmppAddress other)
-		{
-			return string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase) && string.Equals(Server, other.Server, StringComparison.OrdinalIgnoreCase);
+			return string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase) && string.Equals(Host, other.Host, StringComparison.OrdinalIgnoreCase);
         }
 
 		public override string ToString()
@@ -127,75 +156,68 @@ namespace Echo.Xmpp
 			return GetFormattedAddress();
 		}
 
-		public string ToString(bool includeResource = true)
+		public string ToBareString()
 		{
-			return GetFormattedAddress(includeResource);
+			return GetFormattedAddress(includeResource: false);
 		}
 
 		public XmppAddress ToBare()
         {
-			return new XmppAddress(Name, Server);
+			return new XmppAddress(Name, Host);
         }
 
 		public XmppAddress ToServer()
         {
-			return new XmppAddress(Server);
+			return new XmppAddress(Host);
+        }
+
+		public Uri ToUri()
+        {
+			return new Uri($"{SchemeName}{Uri.SchemeDelimiter}{ToString()}", UriKind.Absolute);
+        }
+
+		public Uri ToBareUri()
+        {
+			return new Uri($"{SchemeName}{Uri.SchemeDelimiter}{ToBareString()}", UriKind.Absolute);
+		}
+
+		public Uri ToServerUri()
+        {
+			return new Uri($"{SchemeName}{Uri.SchemeDelimiter}{ToServer()}", UriKind.Absolute);
         }
 
 		public override int GetHashCode()
 		{
-			unchecked
-			{
-				int hash = 17;
-
-				if (!string.IsNullOrWhiteSpace(Name))
-				{
-					hash += 23 + Name.GetHashCode();
-				}
-
-				if (!string.IsNullOrWhiteSpace(Server))
-				{
-					hash += 23 + Server.GetHashCode();
-				}
-
-				if (!string.IsNullOrWhiteSpace(Resource))
-				{
-					hash += 23 + Resource.GetHashCode();
-				}
-
-				return hash;
-			}
+			return HashCode.Combine(Name, Host, Resource, Query);
 		}
 
 		private string GetFormattedAddress(bool includeResource = true)
 		{
-			var result = new StringBuilder();
+            var result = new StringBuilder();
 
-			result.Append(!string.IsNullOrWhiteSpace(Name) ? Name : null);
-			result.Append($"@{Server}");
-			result.Append(!string.IsNullOrWhiteSpace(Resource) && includeResource ? $"/{Resource}" : null);
-			result.Append(Query != null && Query.Count() > 0 ? $"?{GetFormattedQuery()}" : null);
+            if (!string.IsNullOrEmpty(Name))
+            {
+                result.Append(Name);
+                result.Append('@');
+            }
 
-			return result.ToString();
-		}
+            result.Append(Host);
 
-		private string GetFormattedQuery()
-		{
-			var sb = new StringBuilder();
+            if (includeResource && !string.IsNullOrEmpty(Resource))
+            {
+                result.Append('/');
+                result.Append(Resource);
+            }
 
-			foreach (var pair in Query)
-			{
-				sb.Append($"{pair.Key}={Uri.EscapeUriString(pair.Value)}&");
-			}
+            if (!string.IsNullOrEmpty(Query))
+            {
+                result.Append('?');
+                result.Append(Query);
+            }
 
-			if (sb.Length > 0)
-			{
-				sb.Remove(sb.Length - 1, 1);
-			}
+            return result.ToString();
+        }
 
-			return sb.ToString();
-		}
-		
 		public static bool operator ==(XmppAddress left, XmppAddress right)
 		{
 			return left.Equals(right);
@@ -206,19 +228,7 @@ namespace Echo.Xmpp
 			return !(left == right);
 		}
 
-		public static implicit operator string(XmppAddress address)
-		{
-			return address.ToString();
-		}
-
-		public static implicit operator ReadOnlySpan<char>(XmppAddress address)
-        {
-			return address.ToString().AsSpan();
-        }
-
-		public static implicit operator XmppAddress(string s)
-		{
-			return Parse(s);
-		}
+		public static implicit operator XmppAddress(string value) => XmppAddress.Create(value);
+		public static implicit operator string(XmppAddress value) => value.ToString();
 	}
 }

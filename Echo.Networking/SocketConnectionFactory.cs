@@ -8,8 +8,6 @@ namespace Echo.Networking
 {
     public sealed class SocketConnectionFactory : ConnectionFactory
     {
-        public static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
-
         SocketType socketType;
         ProtocolType protocolType;
         AddressFamily addressFamily;
@@ -29,6 +27,7 @@ namespace Echo.Networking
             Socket socket = new Socket(addressFamily, socketType, protocolType);
             socket.NoDelay = protocolType == ProtocolType.Tcp;
             socket.DualMode = addressFamily == AddressFamily.InterNetworkV6;
+            socket.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, false);
 
             try
             {

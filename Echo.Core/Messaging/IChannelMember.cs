@@ -4,6 +4,6 @@
     {
         IChannel Channel { get; }
         XmppUri Address { get; }
-        string Nickname { get; }
+        string Nick { get; }
     }
 }

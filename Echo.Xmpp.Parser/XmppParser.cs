@@ -65,12 +65,12 @@ namespace Echo.Xmpp.Parser
         #region Methods
 
         // TODO ???
-        public override void Parse(ReadOnlySpan<byte> data)
+        public override void Parse(byte[] data)
         {
-            Parse(data.ToArray());
+            Parse(data.AsSpan());
         }
 
-        public override void Parse(byte[] data)
+        public override void Parse(ReadOnlySpan<byte> data)
         {
             if (canceled || data == null || data != null && data.Length == 0)
             {
@@ -244,9 +244,9 @@ namespace Echo.Xmpp.Parser
             XmlReader reader = XmlReader.Create(new StringReader(buffer.ToString()), readerSettings, readerContext);
             try
             {
-                XElement element = null;
-                XElement currentElement = null;
-                string nameSpace = null;
+                XElement? element = null;
+                XElement? currentElement = null;
+                string? nameSpace = null;
                 bool empty = false;
 
                 while (reader.Read())
@@ -256,49 +256,58 @@ namespace Echo.Xmpp.Parser
                         return;
                     }
 
-                    if (reader.NodeType == XmlNodeType.Element)
+                    switch (reader.NodeType)
                     {
-                        empty = reader.IsEmptyElement;
-                        nameSpace = reader.NamespaceURI == string.Empty ? element.Name.NamespaceName : reader.NamespaceURI;
-                        currentElement = elementFactory.Create(XName.Get(reader.LocalName, nameSpace));
+                        case XmlNodeType.Element:
+                        {
+                            empty = reader.IsEmptyElement;
+                            nameSpace = reader.NamespaceURI == string.Empty ? element!.Name.NamespaceName : reader.NamespaceURI;
+                            currentElement = elementFactory.Create(XName.Get(reader.LocalName, nameSpace));
 
-                        for (int i = 0; i < reader.AttributeCount; i++)
-                        {
-                            reader.MoveToAttribute(i);
-                            currentElement.Add(new XAttribute(reader.Name, reader.Value));
+                            for (int i = 0; i < reader.AttributeCount; i++)
+                            {
+                                reader.MoveToAttribute(i);
+                                currentElement.Add(new XAttribute(reader.Name, reader.Value));
+                            }
+
+                            if (element != null)
+                            {
+                                element.Add(currentElement);
+                            }
+
+                            if (!empty || empty && reader.Depth == 0)
+                            {
+                                element = currentElement;
+                            }
+                            else if (reader.Depth > 0)
+                            {
+                                element = currentElement.Parent != null ? currentElement.Parent : currentElement;
+                            }
+
+                            break;
                         }
 
-                        if (element != null)
+                        case XmlNodeType.EndElement:
                         {
-                            element.Add(currentElement);
+                            if (reader.Depth > 0)
+                            {
+                                element = element!.Parent;
+                            }
+                            break;
                         }
 
-                        if (!empty || empty && reader.Depth == 0)
+                        case XmlNodeType.Text:
                         {
-                            element = currentElement;
-                        }
-                        else if (reader.Depth > 0)
-                        {
-                            element = currentElement.Parent != null ? currentElement.Parent : currentElement;
-                        }
-                    }
-                    else if (reader.NodeType == XmlNodeType.EndElement)
-                    {
-                        if (reader.Depth > 0)
-                        {
-                            element = element.Parent;
-                        }
-                    }
-                    else if (reader.NodeType == XmlNodeType.Text)
-                    {
-                        if (element != null)
-                        {
-                            element.Value = reader.Value;
+                            if (element != null)
+                            {
+                                element.Value = reader.Value;
+                            }
+                            break;
                         }
                     }
                 }
 
-                OnElementParsed(new XmppElementEventArgs(element));
+                OnElementParsed(new XmppElementEventArgs(element!));
             }
             catch (XmlException e)
             {

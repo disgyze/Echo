@@ -5,11 +5,11 @@ using System.Text.RegularExpressions;
 
 namespace Echo.Core
 {
-	public static class StringExtensions
+    public static class StringExtensions
 	{
 		public static bool IsWildMatch(this string s, string mask, bool ignoreCase = true)
 		{
-			if (string.Compare(s, mask, StringComparison.OrdinalIgnoreCase) == 0)
+			if (string.Equals(s, mask, StringComparison.OrdinalIgnoreCase))
 			{
 				return true;
 			}
@@ -25,20 +25,21 @@ namespace Echo.Core
 
 		public static bool IsNumeric(this string s)
 		{
-			if (string.IsNullOrWhiteSpace(s))
-			{
-				return false;
-			}
+			//if (string.IsNullOrWhiteSpace(s))
+			//{
+			//	return false;
+			//}
 
-			foreach (char c in s)
-			{
-				if (c < '0' || c > '9')
-				{
-					return false;
-				}
-			}
+			//foreach (char c in s)
+			//{
+			//	if (c < '0' || c > '9')
+			//	{
+			//		return false;
+			//	}
+			//}
 
-			return true;
+			//return true;
+			return double.TryParse(s, out _);
 		}
 
 		static int GetFirstNonWhitespaceCharPos(string s)
@@ -84,23 +85,18 @@ namespace Echo.Core
 			do
 			{
 				i = GetLastWhitespacePos(s, i + 1);
-				count += 1;
+				count++;
 			}
 			while (i > 0);
 
 			return count;
 		}
 
-		public static string Param(this string s, int index)
+		public static string ParamAt(this string s, int index)
 		{
-			if (string.IsNullOrWhiteSpace(s))
+			if (string.IsNullOrWhiteSpace(s) || index < 0 || index > s.Length - 1)
 			{
 				return string.Empty;
-			}
-
-			if (index < 0 || index > s.Length - 1)
-			{
-				throw new IndexOutOfRangeException();
 			}
 
 			int startFrom = GetFirstNonWhitespaceCharPos(s);
@@ -114,8 +110,8 @@ namespace Echo.Core
 			}
 
 			int whitespaceCount = 0;
-			char prevChar = char.MinValue;
-			char currChar = char.MinValue;
+			char prevChar = default;
+			char currChar = default;
 
 			for (int i = startFrom; i < s.Length; i++)
 			{
@@ -130,7 +126,7 @@ namespace Echo.Core
 				{
 					if (!char.IsWhiteSpace(prevChar))
 					{
-						whitespaceCount += 1;
+						whitespaceCount++;
 					}
 				}
 				else
@@ -148,16 +144,11 @@ namespace Echo.Core
 			return string.Empty;
 		}
 
-		public static string ParamOnward(this string s, int index)
+		public static string ParamOnwardAt(this string s, int index)
 		{
-			if (string.IsNullOrWhiteSpace(s))
+			if (string.IsNullOrWhiteSpace(s) || index < 0 || index > s.Length - 1)
 			{
 				return string.Empty;
-			}
-
-			if (index < 0 || index > s.Length - 1)
-			{
-				throw new IndexOutOfRangeException();
 			}
 
 			if (index == 0)
@@ -167,8 +158,8 @@ namespace Echo.Core
 			}
 
 			int whitespaceCount = 0;
-			char prevChar = char.MinValue;
-			char currChar = char.MinValue;
+			char prevChar = default;
+			char currChar = default;
 			bool charFound = false;
 
 			for (int i = 0; i < s.Length; i++)
@@ -189,7 +180,7 @@ namespace Echo.Core
 
 					if (!char.IsWhiteSpace(prevChar))
 					{
-						whitespaceCount += 1;
+						whitespaceCount++;
 					}
 				}
 				else
@@ -246,6 +237,11 @@ namespace Echo.Core
 			}
 
 			return sb.ToString();
+		}
+
+		public static string Quoted(this string? s, char quoteSymbol = '\'')
+		{
+			return $"{quoteSymbol}{s}{quoteSymbol}";
 		}
 	}
 }

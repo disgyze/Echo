@@ -6,9 +6,9 @@ namespace Echo.Core.User
     {
         Guid Id { get; }
         XmppUri Address { get; }
+        bool IsAuthenticated { get; }
         bool IsMetaAccount { get; }
         bool IsLinked { get; }
-        bool IsAuthenticated { get; }
         Presence Presence { get; }
     }
 }

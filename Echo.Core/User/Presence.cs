@@ -2,7 +2,7 @@
 
 namespace Echo.Core.User
 {
-    public struct Presence : IEquatable<Presence>
+    public readonly struct Presence : IEquatable<Presence>
     {
         public string? Text { get; }
         public PresenceState State { get; }
@@ -20,7 +20,7 @@ namespace Echo.Core.User
 
         public bool Equals(Presence other)
         {
-            return string.Compare(Text, other.Text, StringComparison.OrdinalIgnoreCase) == 0 && State == other.State;
+            return string.Equals(Text, other.Text, StringComparison.OrdinalIgnoreCase) && State == other.State;
         }
 
         public override int GetHashCode()

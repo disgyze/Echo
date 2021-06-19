@@ -5,6 +5,6 @@ namespace Echo.Core.Extensibility
 {
     public interface IEventService
     {
-        IDisposable RegisterEvent<TEventArgs>(Func<TEventArgs, Task<EventResult>> handler);
+        IDisposable RegisterEvent<TEventArgs>(Func<TEventArgs, ValueTask<EventResult>> handler);
     }
 }

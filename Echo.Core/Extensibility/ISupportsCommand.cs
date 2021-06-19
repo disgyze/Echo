@@ -4,6 +4,6 @@ namespace Echo.Core.Extensibility
 {
     public interface ISupportsCommand
     {
-        Task CommandAsync(string name);
+        ValueTask CommandAsync(string text);
     }
 }

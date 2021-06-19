@@ -1,14 +1,24 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System;
 using System.Threading.Tasks;
+using Echo.Core.Connections;
 
 namespace Echo.Core.Messaging
 {
     public interface IChannelManager
     {
-        IReadOnlyList<IChannel> Channels { get; }
+        int Count { get; }
+        IChannel? GetChannel(int channelIndex);
+        IChannel? GetChannel(Guid channelId);
+        IChannel? GetChannel(Guid connectionId, XmppUri channelAddress);
+        IChannel? GetChannel(XmppUri accountAddress, XmppUri channelAddress);
 
-        Task JoinChannelAsync(XmppUri address, CancellationToken cancellationToken = default);
-        Task LeaveChannelAsync(XmppUri address, CancellationToken cancellationToken = default);
+        ValueTask<bool> JoinAsync(XmppUri accountAddress, XmppUri channelAddress, string? nick = null, string? password = null);
+        ValueTask<bool> JoinAsync(IXmppConnection connection, XmppUri channelAddress, string? nick = null, string? password = null);
+        ValueTask<bool> InviteAsync(XmppUri accountAddress, XmppUri userAddress, XmppUri channelAddress, string? reason = null);
+        ValueTask<bool> InviteAsync(IXmppConnection connection, XmppUri userAddress, XmppUri channelAddress, string? reason = null);
+        ValueTask<bool> KickAsync(XmppUri accountAddress, XmppUri memberAddress, string? reason = null);
+        ValueTask<bool> KickAsync(XmppUri accountAddress, XmppUri channelAddrss, string nick, string? reason = null);
+        ValueTask<bool> KickAsync(IXmppConnection connection, XmppUri memberAddress, string? reason = null);
+        ValueTask<bool> KickAsync(IXmppConnection connection, XmppUri channelAddress, string nick, string? reason = null);
     }
 }

@@ -2,14 +2,14 @@
 {
     public sealed class ConnectionProxySettings
     {
-        public string Address { get; }
+        public string Host { get; }
         public int Port { get; }
         public int ProxyKind { get; }
         public ProxyCredential? Credential { get; }
 
-        public ConnectionProxySettings(string address, int port, int proxyKind, ProxyCredential? credential)
+        public ConnectionProxySettings(string host, int port, int proxyKind, ProxyCredential? credential)
         {
-            Address = address;
+            Host = host;
             Port = port;
             ProxyKind = proxyKind;
             Credential = credential;

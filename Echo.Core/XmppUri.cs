@@ -4,22 +4,49 @@ namespace Echo.Core
 {
     public sealed class XmppUri : Uri
     {
+        string? fullXmppString = null;
+        string? bareXmppString = null;
+        string? resource = null;
+
         public static readonly string UriSchemeXmpp = "xmpp";
 
-        public string? Resource => GetComponents(UriComponents.Path, UriFormat.Unescaped);
+        public string? Resource
+        {
+            get
+            {
+                if (resource == null)
+                {
+                    resource = GetComponents(UriComponents.Path, UriFormat.Unescaped);
+                }
+                return resource;
+            }
+        }
 
         XmppUri(string s) : base(s, UriKind.Absolute)
         {
         }
 
-        public override string ToString()
+        public string ToUriString()
         {
-            return GetComponents(UriComponents.StrongAuthority | UriComponents.PathAndQuery, UriFormat.Unescaped);
+            return base.ToString();
         }
 
-        public string ToString(bool includeResource)
+        public override string ToString()
         {
-            return includeResource ? ToString() : GetComponents(UriComponents.StrongAuthority, UriFormat.Unescaped);
+            if (fullXmppString == null)
+            {
+                fullXmppString = GetComponents(UriComponents.StrongAuthority | UriComponents.PathAndQuery, UriFormat.Unescaped);
+            }
+            return fullXmppString;
+        }
+
+        public string ToBareString()
+        {
+            if (bareXmppString == null)
+            {
+                bareXmppString = GetComponents(UriComponents.StrongAuthority, UriFormat.Unescaped);
+            }
+            return bareXmppString;
         }
 
         public static XmppUri Create(string s)
@@ -33,9 +60,9 @@ namespace Echo.Core
 
             if (schemeDelimiterPos > 0)
             {
-                string scheme = s.Substring(0, schemeDelimiterPos);
+                var scheme = s.AsSpan().Slice(0, schemeDelimiterPos);
 
-                if (string.Equals(scheme, UriSchemeXmpp, StringComparison.OrdinalIgnoreCase))
+                if (scheme.Equals(UriSchemeXmpp, StringComparison.OrdinalIgnoreCase))
                 {
                     return new XmppUri(s);
                 }
@@ -48,9 +75,8 @@ namespace Echo.Core
             return new XmppUri(UriSchemeXmpp + SchemeDelimiter + s);
         }
 
-        public static bool TryCreate(string s, out XmppUri uri)
+        public static bool TryCreate(string s, out XmppUri? uri)
         {
-            uri = default!;
             try
             {
                 uri = Create(s);
@@ -58,7 +84,33 @@ namespace Echo.Core
             }
             catch
             {
+                uri = default;
                 return false;
+            }
+        }
+
+        public static bool Equals(XmppUri left, XmppUri right, XmppUriComparison comparison = XmppUriComparison.Full)
+        {
+            if (object.ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if (left == null || right == null)
+            {
+                return false;
+            }
+
+            if (comparison == XmppUriComparison.Full)
+            {
+                return left == right;
+            }
+            else
+            {
+                return string.Equals(
+                    left.GetComponents(UriComponents.StrongAuthority, UriFormat.Unescaped), 
+                    right.GetComponents(UriComponents.StrongAuthority, UriFormat.Unescaped), 
+                    StringComparison.OrdinalIgnoreCase);
             }
         }
 

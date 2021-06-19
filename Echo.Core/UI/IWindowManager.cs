@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 
 namespace Echo.Core.UI
 {
@@ -9,8 +8,6 @@ namespace Echo.Core.UI
         IWindow ActiveWindow { get; }
 
         IWindow GetWindow(int windowIndex);
-        IWindow GetWindow(Guid windowId);        
-        Task CloseAsync(int windowIndex);
-        Task CloseAsync(Guid windowId);
+        IWindow GetWindow(Guid windowId);
     }
 }

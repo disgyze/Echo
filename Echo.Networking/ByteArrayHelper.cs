@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.Linq;
 
 namespace Echo.Networking
 {
@@ -11,14 +12,16 @@ namespace Echo.Networking
 
         public static byte[] Combine(params byte[][] buffers)
         {
-            using var ms = new MemoryStream();
+            byte[] result = new byte[buffers.Sum(x => x.Length)];
+            int offset = 0;
 
-            foreach (var buffer in buffers)
+            foreach (byte[] buffer in buffers)
             {
-                ms.Write(buffer);
+                Buffer.BlockCopy(buffer, 0, result, offset, buffer.Length);
+                offset += buffer.Length;
             }
 
-            return ms.ToArray();
+            return result;
         }
     }
 }

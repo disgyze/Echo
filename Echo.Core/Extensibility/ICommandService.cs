@@ -5,6 +5,6 @@ namespace Echo.Core.Extensibility
 {
     public interface ICommandService
     {
-        IDisposable RegisterCommand(string name, Func<CommandArgs, Task<CommandResult>> handler);
+        IDisposable RegisterCommand(string name, Func<CommandArgs, ValueTask<CommandResult>> handler);
     }
 }

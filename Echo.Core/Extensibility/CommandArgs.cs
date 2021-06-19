@@ -1,15 +1,19 @@
 ﻿using System;
+using Echo.Core.Connections;
+using Echo.Core.UI;
 
 namespace Echo.Core.Extensibility
 {
     public sealed class CommandArgs
     {
         public string Params { get; }
-        public Guid WindowId { get; }
+        public IWindow Window { get; }
+        public IXmppConnection Connection { get; }
 
-        public CommandArgs(Guid windowId, string @params)
+        public CommandArgs(IXmppConnection connection, IWindow window, string @params)
         {
-            WindowId = windowId;
+            Connection = connection;
+            Window = window;
             Params = @params;
         }
     }
