@@ -16,7 +16,7 @@ using Echo.Xmpp.Parser;
 
 namespace Echo.Core.Connections
 {
-    public sealed class XmppConnection : IXmppClient, IDisposable, IAsyncDisposable
+    public sealed class XmppConnection : IXmppConnection, IDisposable, IAsyncDisposable
     {
         bool disposed = false;
         Guid id = default;
@@ -115,22 +115,16 @@ namespace Echo.Core.Connections
             }
         }
 
+        public bool IsDisposed => throw new NotImplementedException();
+
+        public ConnectionState State => throw new NotImplementedException();
+
         public XmppConnection(IAccount account, IWindow window, IXmppParser parser)
         {
 
         }
 
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-
-        public ValueTask DisposeAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async ValueTask<bool> ConnectAsync(bool rejoinChannels = true, CancellationToken cancellationToken = default)
+        public async ValueTask<bool> OpenAsync(bool rejoinChannels = true, CancellationToken cancellationToken = default)
         {
             ThrowIfDisposed();
 
@@ -295,5 +289,6 @@ namespace Echo.Core.Connections
                 throw new ObjectDisposedException(nameof(XmppConnection));
             }
         }
+
     }
 }

@@ -4,9 +4,9 @@ namespace Echo.Core.Connections
 {
     public sealed class XmlStreamClosedEventArgs : EventArgs
     {
-        public IXmppClient Connection { get; }
+        public IXmppConnection Connection { get; }
 
-        public XmlStreamClosedEventArgs(IXmppClient connection)
+        public XmlStreamClosedEventArgs(IXmppConnection connection)
         {
             Connection = connection;
         }

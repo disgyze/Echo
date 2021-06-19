@@ -5,11 +5,11 @@ namespace Echo.Core.Connections
 {
     public sealed class CertificateValidatingEventArgs : EventArgs
     {
-        public IXmppClient Connection { get; }
+        public IXmppConnection Connection { get; }
         public X509Certificate Certificate { get; }
         public bool Accept { get; set; }
 
-        public CertificateValidatingEventArgs(IXmppClient connection, X509Certificate certificate, bool accept = true)
+        public CertificateValidatingEventArgs(IXmppConnection connection, X509Certificate certificate, bool accept = true)
         {
             Connection = connection;
             Certificate = certificate;

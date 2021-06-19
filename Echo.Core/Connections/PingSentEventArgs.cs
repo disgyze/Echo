@@ -4,11 +4,11 @@ namespace Echo.Core.Connections
 {
     public sealed class PingSentEventArgs : EventArgs
     {
-        public IXmppClient Client { get; }
+        public IXmppConnection Connection { get; }
 
-        public PingSentEventArgs(IXmppClient client)
+        public PingSentEventArgs(IXmppConnection client)
         {
-            Client = client;
+            Connection = client;
         }
     }
 }

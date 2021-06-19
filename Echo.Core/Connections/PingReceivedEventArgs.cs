@@ -5,12 +5,12 @@ namespace Echo.Core.Connections
     public sealed class PingReceivedEventArgs : EventArgs
     {
         public XmppUri Sender { get; }
-        public IXmppClient Client { get; }
+        public IXmppConnection Connection { get; }
 
-        public PingReceivedEventArgs(XmppUri sender, IXmppClient client)
+        public PingReceivedEventArgs(XmppUri sender, IXmppConnection connection)
         {
             Sender = sender;
-            Client = client;
+            Connection = connection;
         }
     }
 }

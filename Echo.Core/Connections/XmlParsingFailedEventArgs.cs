@@ -5,10 +5,10 @@ namespace Echo.Core.Connections
 {
     public sealed class XmlParsingFailedEventArgs : EventArgs
     {
-        public IXmppClient Connection { get; }
+        public IXmppConnection Connection { get; }
         public XmlException Error { get; }
 
-        public XmlParsingFailedEventArgs(IXmppClient connection, XmlException error)
+        public XmlParsingFailedEventArgs(IXmppConnection connection, XmlException error)
         {
             Connection = connection;
             Error = error;

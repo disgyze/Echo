@@ -5,10 +5,10 @@ namespace Echo.Core.Connections
 {
     public sealed class XmlElementReceivedEventArgs : EventArgs
     {
-        public IXmppClient Connection { get; }
+        public IXmppConnection Connection { get; }
         public XElement Element { get; }
 
-        public XmlElementReceivedEventArgs(IXmppClient connection, XElement element)
+        public XmlElementReceivedEventArgs(IXmppConnection connection, XElement element)
         {
             Connection = connection;
             Element = element;

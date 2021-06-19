@@ -5,6 +5,6 @@ namespace Echo.Core.User
 {
     public sealed class SubscriptionApprovedEventArgs : EventArgs
     {
-        public IXmppClient? Connection { get; }
+        public IXmppConnection Connection { get; }
     }
 }

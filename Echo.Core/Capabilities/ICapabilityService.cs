@@ -6,6 +6,6 @@ namespace Echo.Core.Capabilities
 {
     public interface ICapabilityService
     {
-        Task<CapabilityCollection> GetCapabilitiesAsync(IXmppClient connection, XmppUri address, bool bypassCache = false, CancellationToken cancellationToken = default);
+        Task<CapabilityCollection> GetCapabilitiesAsync(IXmppConnection connection, XmppUri address, bool bypassCache = false, CancellationToken cancellationToken = default);
     }
 }
