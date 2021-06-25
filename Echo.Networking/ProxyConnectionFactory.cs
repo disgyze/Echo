@@ -23,14 +23,14 @@ namespace Echo.Networking
             if (endPoint == null) throw new ArgumentNullException(nameof(endPoint));
             cancellationToken.ThrowIfCancellationRequested();
 
-            var connection = await connectionFactory.OpenAsync(endPoint, cancellationToken);
+            var connection = await connectionFactory.OpenAsync(endPoint, cancellationToken).ConfigureAwait(false);
             var proxyConnection = proxyKind switch 
             {
                 ProxyKind.Socks4 => new Socks4ProxyConnection(options),
                 _ => throw new NotSupportedException()
             };
 
-            await proxyConnection.EstablishAsync(connection, cancellationToken);
+            await proxyConnection.EstablishAsync(connection, cancellationToken).ConfigureAwait(false);
             return connection;
         }
     }

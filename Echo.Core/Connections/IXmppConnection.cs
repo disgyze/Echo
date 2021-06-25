@@ -11,7 +11,7 @@ namespace Echo.Core.Connections
         bool IsDisposed { get; }
         ConnectionEndPoint? LocalEndPoint { get; }
         ConnectionEndPoint? RemoteEndPoint { get; }
-        ConnectionState State { get; }
+        ConnectionState ConnectionState { get; }
         SecurityState SecurityState { get; }
         EncryptionProtocol EncryptionProtocol { get; }
         IAccount Account { get; }

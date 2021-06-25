@@ -23,7 +23,7 @@ namespace Echo.Core.Connections
         ConnectionEndPoint? localEndPoint = null;
         ConnectionEndPoint? remoteEndPoint = null;
         SecurityState securityState = SecurityState.None;
-        ConnectionState connectionState = ConnectionState.Disconnected;
+        ConnectionState connectionState = Connections.ConnectionState.Disconnected;
         EncryptionProtocol encryptionProtocol = EncryptionProtocol.None;
         IAccount account = null!;
         IWindow window = null!;
@@ -117,7 +117,7 @@ namespace Echo.Core.Connections
 
         public bool IsDisposed => throw new NotImplementedException();
 
-        public ConnectionState State => throw new NotImplementedException();
+        public ConnectionState ConnectionState => throw new NotImplementedException();
 
         public XmppConnection(IAccount account, IWindow window, IXmppParser parser)
         {
@@ -159,7 +159,7 @@ namespace Echo.Core.Connections
                     //connectionFactory = new ProxyConnectionFactory(connectionFactory, new ProxyOptions())
                 }
 
-                SetState(ConnectionState.Connecting);
+                SetState(Connections.ConnectionState.Connecting);
                 connection = await connectionFactory!.OpenAsync(connectionEndPoint, cancellationTokenSource.Token);
 
                 IPEndPoint socketLocalEndPoint = (IPEndPoint)connection.Socket.LocalEndPoint!;
@@ -168,7 +168,7 @@ namespace Echo.Core.Connections
                 IPEndPoint socketRemoteEndPoint = (IPEndPoint)connection.Socket.RemoteEndPoint!;
                 remoteEndPoint = new ConnectionEndPoint(socketRemoteEndPoint.Address, host, socketRemoteEndPoint.Port);
 
-                SetState(ConnectionState.Connected);
+                SetState(Connections.ConnectionState.Connected);
                 StartDataExchange(cancellationTokenSource.Token);
 
                 return true;
@@ -276,7 +276,7 @@ namespace Echo.Core.Connections
             parser?.Cancel();
 
             securityState = SecurityState.None;
-            connectionState = ConnectionState.Disconnected;
+            connectionState = Connections.ConnectionState.Disconnected;
             encryptionProtocol = EncryptionProtocol.None;
             localEndPoint = null;
             remoteEndPoint = null;

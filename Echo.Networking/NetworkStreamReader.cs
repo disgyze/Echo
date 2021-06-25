@@ -60,7 +60,7 @@ namespace Echo.Networking
             return Task.Factory.StartNew(() =>
             {
                 byte[] data = ArrayPool<byte>.Shared.Rent(stream!.Socket.ReceiveBufferSize);
-                Span<byte> buffer = new Span<byte>(data); //new byte[stream!.Socket.ReceiveBufferSize]
+                Span<byte> buffer = new Span<byte>(ArrayPool<byte>.Shared.Rent(stream!.Socket.ReceiveBufferSize));
                 try
                 {                    
                     while (stream.Socket.Connected && !cancellationTokenSource.Token.IsCancellationRequested)

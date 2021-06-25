@@ -19,7 +19,7 @@ namespace Echo.Networking
 
         public override async ValueTask<SocketConnection> OpenAsync(EndPoint endPoint, CancellationToken cancellationToken = default)
         {
-            var connection = await connectionFactory.OpenAsync(endPoint, cancellationToken);
+            var connection = await connectionFactory.OpenAsync(endPoint, cancellationToken).ConfigureAwait(false);
             return await UpgradeAsync(connection, sslOptions, cancellationToken).ConfigureAwait(false);
         }
 

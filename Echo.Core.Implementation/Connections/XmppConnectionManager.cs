@@ -23,7 +23,7 @@ namespace Echo.Core.Connections
         public IXmppConnection? GetConnection(int connectionIndex)
         {
             var temp = connectionList;
-            return connectionIndex > 0 && connectionIndex < temp.Length ? temp[connectionIndex] : null;
+            return connectionIndex >= 0 && connectionIndex < temp.Length ? temp[connectionIndex] : null;
         }
 
         public IXmppConnection? GetConnection(XmppUri accountUri)
@@ -40,10 +40,10 @@ namespace Echo.Core.Connections
         {
             ImmutableInterlocked.Update(ref connectionList, connectionList => connectionList.Remove(connection));
         }
-
+                
         public void SetActiveConnection(IXmppConnection? connection)
         {
-            if (ActiveConnection == connection)
+            if (activeConnection == connection)
             {
                 return;
             }

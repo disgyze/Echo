@@ -60,20 +60,13 @@ namespace Echo.Networking
             {
                 try
                 {
-                    while (stream.Socket.Connected && !cancellationTokenSource.IsCancellationRequested)
+                    while (stream!.Socket.Connected && !cancellationTokenSource.IsCancellationRequested)
                     {
-                        //while (queue.Count > 0 && !cancellationTokenSource.IsCancellationRequested)
-                        //{
-                        //    if (queue.TryTake(out var data))
-                        //    {
-                        //        stream.Write(data);
-                        //    }
-                        //}
-                        byte[] data = takeData(); // This call should block
+                        byte[] data = takeData();
 
                         if (data != null && data.Length > 0)
                         {
-                            stream.Write(data);
+                            stream.Write(data, 0, data.Length);
                         }
                     }
                 }

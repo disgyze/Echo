@@ -63,7 +63,7 @@ namespace Echo.Plugins.Default
 
             if (activeConnection != null)
             {
-                if (activeConnection.State != ConnectionState.Disconnected)
+                if (activeConnection.ConnectionState != ConnectionState.Disconnected)
                 {
 
                     // If no params provided, close the active connection
@@ -128,7 +128,7 @@ namespace Echo.Plugins.Default
         {
             var channelAddressParameterSpecified = true;
 
-            if (c.Connection.State != ConnectionState.Connected)
+            if (c.Connection.ConnectionState != ConnectionState.Connected)
             {
                 c.Window.Display.ShowError("Not connected");
                 return CommandResult.Stop;
