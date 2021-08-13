@@ -6,242 +6,228 @@ using System.Text.RegularExpressions;
 namespace Echo.Core
 {
     public static class StringExtensions
-	{
-		public static bool IsWildMatch(this string s, string mask, bool ignoreCase = true)
-		{
-			if (string.Equals(s, mask, StringComparison.OrdinalIgnoreCase))
-			{
-				return true;
-			}
+    {
+        public static bool IsWildMatch(this string s, string mask, bool ignoreCase = true)
+        {
+            if (string.Equals(s, mask, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
 
-			if (!string.IsNullOrWhiteSpace(s) && !string.IsNullOrWhiteSpace(mask))
-			{
-				string pattern = '^' + Regex.Escape(mask).Replace(@"\*", ".*").Replace(@"\?", "?") + "$";
-				return Regex.IsMatch(s, pattern, ignoreCase ? RegexOptions.IgnoreCase : RegexOptions.None);
-			}
+            if (!string.IsNullOrWhiteSpace(s) && !string.IsNullOrWhiteSpace(mask))
+            {
+                string pattern = '^' + Regex.Escape(mask).Replace(@"\*", ".*").Replace(@"\?", "?") + "$";
+                return Regex.IsMatch(s, pattern, ignoreCase ? RegexOptions.IgnoreCase : RegexOptions.None);
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-		public static bool IsNumeric(this string s)
-		{
-			//if (string.IsNullOrWhiteSpace(s))
-			//{
-			//	return false;
-			//}
+        public static bool IsNumeric(this string s)
+        {
+            return double.TryParse(s, out _);
+        }
 
-			//foreach (char c in s)
-			//{
-			//	if (c < '0' || c > '9')
-			//	{
-			//		return false;
-			//	}
-			//}
+        static int GetFirstNonWhitespaceCharPos(string s)
+        {
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (!char.IsWhiteSpace(s[i]))
+                {
+                    return i;
+                }
+            }
+            return 0;
+        }
 
-			//return true;
-			return double.TryParse(s, out _);
-		}
+        static int GetLastWhitespacePos(string s, int startIndex)
+        {
+            char currChar = char.MinValue;
+            char prevChar = char.MinValue;
 
-		static int GetFirstNonWhitespaceCharPos(string s)
-		{
-			for (int i = 0; i < s.Length; i++)
-			{
-				if (!char.IsWhiteSpace(s[i]))
-				{
-					return i;
-				}
-			}
-			return 0;
-		}
+            for (int i = startIndex; i < s.Length; i++)
+            {
+                currChar = s[i];
 
-		static int GetLastWhitespacePos(string s, int startIndex)
-		{
-			char currChar = char.MinValue;
-			char prevChar = char.MinValue;
+                if (i >= 1)
+                {
+                    prevChar = s[i - 1];
+                }
 
-			for (int i = startIndex; i < s.Length; i++)
-			{
-				currChar = s[i];
+                if (!char.IsWhiteSpace(currChar) && char.IsWhiteSpace(prevChar))
+                {
+                    return i;
+                }
+            }
 
-				if (i >= 1)
-				{
-					prevChar = s[i - 1];
-				}
+            return 0;
+        }
 
-				if (!char.IsWhiteSpace(currChar) && char.IsWhiteSpace(prevChar))
-				{
-					return i;
-				}
-			}
+        public static int ParamCount(this string s)
+        {
+            int i = GetFirstNonWhitespaceCharPos(s);
+            int count = 0;
 
-			return 0;
-		}
+            do
+            {
+                i = GetLastWhitespacePos(s, i + 1);
+                count++;
+            }
+            while (i > 0);
 
-		public static int ParamCount(this string s)
-		{
-			int i = GetFirstNonWhitespaceCharPos(s);
-			int count = 0;
+            return count;
+        }
 
-			do
-			{
-				i = GetLastWhitespacePos(s, i + 1);
-				count++;
-			}
-			while (i > 0);
+        public static string ParamAt(this string s, int index)
+        {
+            if (string.IsNullOrWhiteSpace(s) || index < 0 || index > s.Length - 1)
+            {
+                return string.Empty;
+            }
 
-			return count;
-		}
+            int startFrom = GetFirstNonWhitespaceCharPos(s);
 
-		public static string ParamAt(this string s, int index)
-		{
-			if (string.IsNullOrWhiteSpace(s) || index < 0 || index > s.Length - 1)
-			{
-				return string.Empty;
-			}
+            if (index == 0)
+            {
+                int whitespacePos = s.IndexOf(' ', startFrom);
+                int count = whitespacePos > 0 ? whitespacePos - startFrom : s.Length - startFrom;
 
-			int startFrom = GetFirstNonWhitespaceCharPos(s);
+                return s.Substring(startFrom, count);
+            }
 
-			if (index == 0)
-			{
-				int whitespacePos = s.IndexOf(' ', startFrom);
-				int count = whitespacePos > 0 ? whitespacePos - startFrom : s.Length - startFrom;
+            int whitespaceCount = 0;
+            char prevChar = default;
+            char currChar = default;
 
-				return s.Substring(startFrom, count);
-			}
+            for (int i = startFrom; i < s.Length; i++)
+            {
+                currChar = s[i];
 
-			int whitespaceCount = 0;
-			char prevChar = default;
-			char currChar = default;
+                if (i >= 1)
+                {
+                    prevChar = s[i - 1];
+                }
 
-			for (int i = startFrom; i < s.Length; i++)
-			{
-				currChar = s[i];
+                if (char.IsWhiteSpace(currChar))
+                {
+                    if (!char.IsWhiteSpace(prevChar))
+                    {
+                        whitespaceCount++;
+                    }
+                }
+                else
+                {
+                    if (index == whitespaceCount)
+                    {
+                        int lastWhitespacePos = s.IndexOf(' ', i + 1);
+                        int count = lastWhitespacePos > 0 ? lastWhitespacePos - i : s.Length - i;
 
-				if (i >= 1)
-				{
-					prevChar = s[i - 1];
-				}
+                        return s.Substring(i, count);
+                    }
+                }
+            }
 
-				if (char.IsWhiteSpace(currChar))
-				{
-					if (!char.IsWhiteSpace(prevChar))
-					{
-						whitespaceCount++;
-					}
-				}
-				else
-				{
-					if (index == whitespaceCount)
-					{
-						int lastWhitespacePos = s.IndexOf(' ', i + 1);
-						int count = lastWhitespacePos > 0 ? lastWhitespacePos - i : s.Length - i;
+            return string.Empty;
+        }
 
-						return s.Substring(i, count);
-					}
-				}
-			}
+        public static string ParamOnwardAt(this string s, int index)
+        {
+            if (string.IsNullOrWhiteSpace(s) || index < 0 || index > s.Length - 1)
+            {
+                return string.Empty;
+            }
 
-			return string.Empty;
-		}
+            if (index == 0)
+            {
+                // TODO
+                return s;
+            }
 
-		public static string ParamOnwardAt(this string s, int index)
-		{
-			if (string.IsNullOrWhiteSpace(s) || index < 0 || index > s.Length - 1)
-			{
-				return string.Empty;
-			}
+            int whitespaceCount = 0;
+            char prevChar = default;
+            char currChar = default;
+            bool charFound = false;
 
-			if (index == 0)
-			{
-				// TODO
-				return s;
-			}
+            for (int i = 0; i < s.Length; i++)
+            {
+                currChar = s[i];
 
-			int whitespaceCount = 0;
-			char prevChar = default;
-			char currChar = default;
-			bool charFound = false;
+                if (i >= 1)
+                {
+                    prevChar = s[i - 1];
+                }
 
-			for (int i = 0; i < s.Length; i++)
-			{
-				currChar = s[i];
+                if (char.IsWhiteSpace(currChar))
+                {
+                    if (!charFound)
+                    {
+                        continue;
+                    }
 
-				if (i >= 1)
-				{
-					prevChar = s[i - 1];
-				}
+                    if (!char.IsWhiteSpace(prevChar))
+                    {
+                        whitespaceCount++;
+                    }
+                }
+                else
+                {
+                    charFound = true;
 
-				if (char.IsWhiteSpace(currChar))
-				{
-					if (!charFound)
-					{
-						continue;
-					}
+                    if (index == whitespaceCount)
+                    {
+                        return s.Substring(i, s.Length - i);
+                    }
+                }
+            }
 
-					if (!char.IsWhiteSpace(prevChar))
-					{
-						whitespaceCount++;
-					}
-				}
-				else
-				{
-					charFound = true;
+            return string.Empty;
+        }
 
-					if (index == whitespaceCount)
-					{
-						return s.Substring(i, s.Length - i);
-					}
-				}
-			}
+        public static string LeftSubstring(this string s, int count)
+        {
+            if (count < s.Length)
+            {
+                return s.Substring(0, count);
+            }
+            return s;
+        }
 
-			return string.Empty;
-		}
+        public static string RightSubstring(this string s, int count)
+        {
+            if (count < s.Length)
+            {
+                return s.Substring(s.Length - count, count);
+            }
+            return s;
+        }
 
-		public static string LeftSubstring(this string s, int count)
-		{
-			if (count < s.Length)
-			{
-				return s.Substring(0, count);
-			}
-			return s;
-		}
+        public static string Replace(this string s, IReadOnlyDictionary<string, string> map)
+        {
+            StringBuilder sb = new StringBuilder(s);
 
-		public static string RightSubstring(this string s, int count)
-		{
-			if (count < s.Length)
-			{
-				return s.Substring(s.Length - count, count);
-			}
-			return s;
-		}
+            foreach (var pair in map)
+            {
+                sb.Replace(pair.Key, pair.Value);
+            }
 
-		public static string Replace(this string s, IReadOnlyDictionary<string, string> map)
-		{
-			StringBuilder sb = new StringBuilder(s);
+            return sb.ToString();
+        }
 
-			foreach (var pair in map)
-			{
-				sb.Replace(pair.Key, pair.Value);
-			}
+        public static string Replace(this string s, IReadOnlyDictionary<string, Func<string>> map)
+        {
+            StringBuilder sb = new StringBuilder(s);
 
-			return sb.ToString();
-		}
+            foreach (var pair in map)
+            {
+                sb.Replace(pair.Key, pair.Value());
+            }
 
-		public static string Replace(this string s, IReadOnlyDictionary<string, Func<string>> map)
-		{
-			StringBuilder sb = new StringBuilder(s);
+            return sb.ToString();
+        }
 
-			foreach (var pair in map)
-			{
-				sb.Replace(pair.Key, pair.Value());
-			}
-
-			return sb.ToString();
-		}
-
-		public static string Quoted(this string? s, char quoteSymbol = '\'')
-		{
-			return $"{quoteSymbol}{s}{quoteSymbol}";
-		}
-	}
+        public static string Quoted(this string? s, char quoteSymbol = '\'')
+        {
+            return $"{quoteSymbol}{s}{quoteSymbol}";
+        }
+    }
 }

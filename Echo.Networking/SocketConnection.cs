@@ -40,10 +40,7 @@ namespace Echo.Networking
 
         public ValueTask CloseAsync(SocketConnectionCloseMethod closeMethod, CancellationToken cancellationToken = default)
         {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return ValueTask.FromCanceled(cancellationToken);
-            }
+            cancellationToken.ThrowIfCancellationRequested();
 
             if (!disposed)
             {

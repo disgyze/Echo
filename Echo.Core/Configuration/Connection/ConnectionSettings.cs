@@ -1,6 +1,6 @@
 ﻿namespace Echo.Core.Configuration.Connection
 {
-    public class ConnectionSettings
+    public sealed class ConnectionSettings
     {
         static readonly ConnectionSettings defaultSettings = new ConnectionSettings();
 

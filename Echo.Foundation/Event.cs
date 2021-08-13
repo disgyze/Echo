@@ -50,9 +50,11 @@ namespace Echo.Foundation
 
         public void Publish(TEventArgs e)
         {
-            for (int i = 0; i < subscriptionList.Length; i++)
+            ImmutableArray<Subscription> temp = subscriptionList;
+
+            for (int i = 0; i < temp.Length; i++)
             {
-                if (subscriptionList[i].Invoke(e) == EventResult.Stop)
+                if (temp[i].Invoke(e) == EventResult.Stop)
                 {
                     break;
                 }

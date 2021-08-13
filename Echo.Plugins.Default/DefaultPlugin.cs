@@ -17,8 +17,7 @@ namespace Echo.Plugins.Default
 
     public sealed class DefaultPlugin : IPlugin
     {
-        IWindowManager windowManager = null;
-        IChannelManager channelManager = null;
+        IWindowService windowService = null;
         IXmppConnectionManager connectionManager = null;
         IEventService eventService = null;
         ICommandService commandService = null;
@@ -34,8 +33,7 @@ namespace Echo.Plugins.Default
         {            
             subscriptionContainer = new DisposableContainer(
                 eventService.RegisterEvent<AccountPresenceChangedEventArgs>(EventAccountPresenceChanged),
-                commandService.RegisterCommand("echo", Echo),
-                commandService.RegisterCommand("invite", Invite));
+                commandService.RegisterCommand("echo", Echo));
 
             return ValueTask.CompletedTask;
         }
@@ -63,7 +61,7 @@ namespace Echo.Plugins.Default
 
             if (activeConnection != null)
             {
-                if (activeConnection.ConnectionState != ConnectionState.Disconnected)
+                if (activeConnection.ConnectionState != ConnectionState.Closed)
                 {
 
                     // If no params provided, close the active connection
@@ -85,33 +83,118 @@ namespace Echo.Plugins.Default
             return CommandResult.Stop;
         }
         
-        // /kick [nick/address] <reason>
+        private ValueTask<CommandResult> Window(CommandArgs c)
+        {
+            if (int.TryParse(c.Params.ParamAt(0), out int index))
+            {
+                IWindow window = windowService.GetWindow(index);
+
+                if (window != null)
+                {
+                    window.Activate();
+                }
+                else
+                {
+                    c.Window.Display.ShowOther("/window: Index out of range");
+                }
+            }
+            else
+            {
+                c.Window.Display.ShowOther("/window: Invalid index");
+            }
+            return ValueTask.FromResult(CommandResult.Stop);
+        }
+
+        private ValueTask<CommandResult> Close(CommandArgs c)
+        {
+            windowService.ActiveWindow?.Close();
+            return ValueTask.FromResult(CommandResult.Stop);
+        }
+
+        private async ValueTask<CommandResult> Me(CommandArgs c)
+        {
+            IChannel channel = windowService.GetChannel(c.Window);
+
+            if (channel != null)
+            {
+                await channel.SendActionAsync(c.Params);
+            }
+
+            return CommandResult.Stop;
+        }
+
+        // /kick [nick] <reason>
         private async ValueTask<CommandResult> Kick(CommandArgs c)
         {
             string nick = c.Params.ParamAt(0);
 
             if (nick == string.Empty)
             {
-                c.Window.Display.ShowError("/kick: No nick or address specified");
+                c.Window.Display.ShowError("/kick: No nick specified");
                 return CommandResult.Stop;
             }
 
-            string reason = c.Params.ParamOnwardAt(1);
+            IMucChannel channel = windowService.GetChannel(c.Window) as IMucChannel;
 
-            if (XmppUri.TryCreate(nick, out var address))
+            if (channel != null)
             {
-                await channelManager.KickAsync(c.Connection, address, reason);
+                var reason = c.Params.ParamOnwardAt(1);
+                await channel.KickAsync(nick, reason);
             }
             else
             {
-                if (channelManager.GetChannel(c.Window.Id) is IMucChannel channel)
+                c.Window.Display.ShowError("/kick: Can only be used from MUC-channel window");
+            }
+
+            return CommandResult.Stop;
+        }
+
+        private async ValueTask<CommandResult> MassKick(CommandArgs c)
+        {
+            IMucChannel channel = windowService.GetChannel(c.Window) as IMucChannel;
+            
+            if (channel != null)
+            {
+                string reason = c.Params.ParamOnwardAt(0);
+                IChannelMember member = null;
+
+                for (int i = 0; i < channel.MemberCount; i++)
                 {
-                    await channel.KickAsync(nick, reason);
+                    member = channel.GetMember(i);
+
+                    if (member == null)
+                    {
+                        break;
+                    }
+
+                    await channel.KickAsync(member.Nick, reason);
                 }
-                else
+            }
+            else
+            {
+                c.Window.Display.ShowError("/masskick: Can only be used from MUC-channel window");
+            }
+
+            return CommandResult.Stop;
+        }
+
+        private async ValueTask<CommandResult> LeaveAll(CommandArgs c)
+        {
+            string reason = c.Params.ParamOnwardAt(0);
+            IChannel channel = null;
+            IChannelService channelService = c.Connection.GetService<IChannelService>();
+
+            for (int i = 0; i < channelService.Count; i++)
+            {
+                channel = channelService.GetChannel(i);
+
+                // No channel found, exit
+                if (channel == null)
                 {
-                    c.Window.Display.ShowError("/kick: Can only be used from MUC-channel window");
+                    break;
                 }
+
+                await channel.LeaveAsync(reason);
             }
 
             return CommandResult.Stop;
@@ -120,44 +203,6 @@ namespace Echo.Plugins.Default
         private async ValueTask<CommandResult> Join(CommandArgs c)
         {
             string address = c.Params.ParamAt(0);
-
-            return CommandResult.Stop;
-        }
-
-        private async ValueTask<CommandResult> Invite(CommandArgs c)
-        {
-            var channelAddressParameterSpecified = true;
-
-            if (c.Connection.ConnectionState != ConnectionState.Connected)
-            {
-                c.Window.Display.ShowError("Not connected");
-                return CommandResult.Stop;
-            }
-
-            if (!XmppUri.TryCreate(c.Params.ParamAt(1), out var userAddress))
-            {
-                c.Window.Display.ShowError("/join: User address is invalid or not specified");
-                return CommandResult.Stop;
-            }
-
-            if (!XmppUri.TryCreate(c.Params.ParamAt(2), out var channelAddress))
-            {
-                var channel = channelManager.GetChannel(c.Window.Id);
-
-                if (channel == null)
-                {
-                    c.Window.Display.ShowError("/join: Can only be used from channel window");
-                    return CommandResult.Stop;
-                }
-
-                channelAddress = channel.Address;
-                channelAddressParameterSpecified = false;
-            }
-
-            var reason = c.Params.ParamOnwardAt(channelAddressParameterSpecified ? 3 : 2);
-
-            c.Window.Display.ShowChannelInvite(userAddress, channelAddress, reason);
-            await channelManager.InviteAsync(c.Connection, userAddress, channelAddress, reason);
 
             return CommandResult.Stop;
         }

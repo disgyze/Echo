@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using Echo.Core.Extensibility;
 using Echo.Core.UI;
@@ -6,7 +7,7 @@ using Echo.Core.User;
 
 namespace Echo.Core.Connections
 {
-    public interface IXmppConnection : ISupportsCommand
+    public interface IXmppConnection : IServiceProvider, ISupportsCommand
     {
         bool IsDisposed { get; }
         ConnectionEndPoint? LocalEndPoint { get; }

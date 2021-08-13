@@ -10,8 +10,6 @@
     <ProjectReference Include="..\Echo.Core\Echo.Core.csproj" />
     <ProjectReference Include="..\Echo.Foundation\Echo.Foundation.csproj" />
     <ProjectReference Include="..\Echo.Networking\Echo.Networking.csproj" />
-    <ProjectReference Include="..\Echo.Xmpp.ElementModel\Echo.Xmpp.ElementModel.csproj" />
-    <ProjectReference Include="..\Echo.Xmpp.Parser\Echo.Xmpp.Parser.csproj" />
     <ProjectReference Include="..\Echo.Xmpp\Echo.Xmpp.csproj" />
   </ItemGroup>
 

@@ -23,7 +23,7 @@ namespace Echo.Core.Connections
         ConnectionEndPoint? localEndPoint = null;
         ConnectionEndPoint? remoteEndPoint = null;
         SecurityState securityState = SecurityState.None;
-        ConnectionState connectionState = Connections.ConnectionState.Disconnected;
+        ConnectionState connectionState = ConnectionState.Closed;
         EncryptionProtocol encryptionProtocol = EncryptionProtocol.None;
         IAccount account = null!;
         IWindow window = null!;
@@ -33,7 +33,6 @@ namespace Echo.Core.Connections
         NetworkStreamWriter? streamWriter = null;
         SocketConnection? connection = null;
         ConnectionSettings connectionSettings = null!;
-        BlockingCollection<byte[]> outgoingQueue = new BlockingCollection<byte[]>();
         CancellationTokenSource cancellationTokenSource = null;
 
         IEventPublisher<ConnectionErrorEventArgs> connectionError = null!;
@@ -117,8 +116,6 @@ namespace Echo.Core.Connections
 
         public bool IsDisposed => throw new NotImplementedException();
 
-        public ConnectionState ConnectionState => throw new NotImplementedException();
-
         public XmppConnection(IAccount account, IWindow window, IXmppParser parser)
         {
 
@@ -159,7 +156,7 @@ namespace Echo.Core.Connections
                     //connectionFactory = new ProxyConnectionFactory(connectionFactory, new ProxyOptions())
                 }
 
-                SetState(Connections.ConnectionState.Connecting);
+                SetState(ConnectionState.Opening);
                 connection = await connectionFactory!.OpenAsync(connectionEndPoint, cancellationTokenSource.Token);
 
                 IPEndPoint socketLocalEndPoint = (IPEndPoint)connection.Socket.LocalEndPoint!;
@@ -168,7 +165,7 @@ namespace Echo.Core.Connections
                 IPEndPoint socketRemoteEndPoint = (IPEndPoint)connection.Socket.RemoteEndPoint!;
                 remoteEndPoint = new ConnectionEndPoint(socketRemoteEndPoint.Address, host, socketRemoteEndPoint.Port);
 
-                SetState(Connections.ConnectionState.Connected);
+                SetState(ConnectionState.Opened);
                 StartDataExchange(cancellationTokenSource.Token);
 
                 return true;
@@ -189,7 +186,7 @@ namespace Echo.Core.Connections
 
         public ValueTask<bool> SendAsync(XElement? element, CancellationToken cancellationToken = default)
         {
-            if (ConnectionState != ConnectionState.Connected)
+            if (ConnectionState != ConnectionState.Opened)
             {
                 Window.Display.ShowError("Not connected");
                 return ValueTask.FromResult(false);
@@ -200,8 +197,7 @@ namespace Echo.Core.Connections
                 return ValueTask.FromResult(false);
             }
 
-            outgoingQueue.Add(Encoding.UTF8.GetBytes(element.ToString()), cancellationToken);
-
+            streamWriter!.Write(Encoding.UTF8.GetBytes(element.ToString()));
             return ValueTask.FromResult(true);
         }
 
@@ -228,11 +224,6 @@ namespace Echo.Core.Connections
 
         private void StartDataExchange(CancellationToken cancellationToken = default)
         {
-            byte[] TakeData()
-            {
-                return outgoingQueue.Take(cancellationToken);
-            }
-
             void HandleData(byte[] data)
             {
                 parser?.Parse(data);
@@ -250,7 +241,7 @@ namespace Echo.Core.Connections
             streamWriter = new NetworkStreamWriter((NetworkStream)connection!.Stream);
 
             _ = streamReader.StartAsync(HandleData, HandleError, cancellationToken);
-            _ = streamWriter.StartAsync(TakeData, HandleError, cancellationToken);
+            _ = streamWriter.StartAsync(HandleError, cancellationToken);
         }
 
         private void StopDataExchange()
@@ -276,7 +267,7 @@ namespace Echo.Core.Connections
             parser?.Cancel();
 
             securityState = SecurityState.None;
-            connectionState = Connections.ConnectionState.Disconnected;
+            connectionState = ConnectionState.Closed;
             encryptionProtocol = EncryptionProtocol.None;
             localEndPoint = null;
             remoteEndPoint = null;

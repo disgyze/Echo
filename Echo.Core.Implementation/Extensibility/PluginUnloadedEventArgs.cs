@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Echo.Core.UI
+namespace Echo.Core.Extensibility
 {
-    public abstract class Window
+    public sealed class PluginUnloadedEventArgs : EventArgs
     {
     }
 }

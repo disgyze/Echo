@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace Echo.Networking
     {
         bool disposed = false;
         NetworkStream? stream = null;
+        BlockingCollection<byte[]>? queue = null;
         CancellationTokenSource? cancellationTokenSource = null;
 
         public NetworkStreamWriter(NetworkStream stream)
@@ -40,6 +42,13 @@ namespace Echo.Networking
                     cancellationTokenSource.Dispose();
                     cancellationTokenSource = null;
                 }
+
+                if (queue != null)
+                {
+                    queue.Dispose();
+                    queue = null;
+                }
+
                 disposed = true;
             }
 
@@ -47,11 +56,9 @@ namespace Echo.Networking
             return default;
         }
 
-        public Task StartAsync(Func<byte[]> takeData, Action<Exception>? onError = null, CancellationToken cancellationToken = default)
+        public Task StartAsync(Action<Exception>? onError = null, CancellationToken cancellationToken = default)
         {
             ThrowIfDisposed();
-
-            if (takeData == null) throw new ArgumentNullException(nameof(takeData));
             cancellationToken.ThrowIfCancellationRequested();
 
             cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -62,7 +69,7 @@ namespace Echo.Networking
                 {
                     while (stream!.Socket.Connected && !cancellationTokenSource.IsCancellationRequested)
                     {
-                        byte[] data = takeData();
+                        byte[] data = queue!.Take();
 
                         if (data != null && data.Length > 0)
                         {
@@ -75,6 +82,12 @@ namespace Echo.Networking
                     onError?.Invoke(e);
                 }
             }, cancellationTokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+        }
+
+        public void Write(byte[] data)
+        {
+            ThrowIfDisposed();
+            queue!.Add(data);
         }
 
         private void ThrowIfDisposed()

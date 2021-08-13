@@ -2,7 +2,7 @@
 
 namespace Echo.Core.User
 {
-    public interface IAccountManager
+    public interface IAccountService
     {
         int Count { get; }
 
