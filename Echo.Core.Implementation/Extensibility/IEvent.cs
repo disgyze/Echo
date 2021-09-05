@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Echo.Foundation
+namespace Echo.Core.Extensibility
 {
     public interface IEvent<TEventArgs> : IEventPublisher<TEventArgs>, IEventSubscriber<TEventArgs> where TEventArgs : EventArgs
     {

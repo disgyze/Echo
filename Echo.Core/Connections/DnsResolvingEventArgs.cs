@@ -4,12 +4,12 @@ namespace Echo.Core.Connections
 {
     public sealed class DnsResolvingEventArgs : EventArgs
     {
-        public IXmppConnection Client { get; }
+        public IXmppConnection Connection { get; }
         public string Host { get; }
 
-        public DnsResolvingEventArgs(IXmppConnection client, string host)
+        public DnsResolvingEventArgs(IXmppConnection connection, string host)
         {
-            Client = client;
+            Connection = connection;
             Host = host;
         }
     }

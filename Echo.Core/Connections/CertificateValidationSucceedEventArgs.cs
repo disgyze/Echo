@@ -1,6 +1,8 @@
-﻿namespace Echo.Core.Connections
+﻿using System;
+
+namespace Echo.Core.Connections
 {
-    class CertificateValidationSucceedEventArgs
+    public sealed class CertificateValidationSucceedEventArgs : EventArgs
     {
     }
 }

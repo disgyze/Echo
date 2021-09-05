@@ -11,5 +11,7 @@ namespace Echo.Core.User
         bool IsMetaAccount { get; }
         bool IsLinked { get; }
         Presence Presence { get; }
+
+        IAccount WithPresence(Presence presence);
     }
 }

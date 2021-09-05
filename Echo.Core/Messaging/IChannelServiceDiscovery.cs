@@ -5,7 +5,7 @@ namespace Echo.Core.Messaging
 {
     public interface IChannelServiceDiscovery
     {
-        ValueTask<IReadOnlyList<ChannelServiceInformation>> GetChannelServiceListAsync();
-        ValueTask<IReadOnlyList<IChannel>> GetChannelRangeAsync(int min, int max);
+        Task<IReadOnlyList<ChannelServiceInformation>> GetChannelServiceListAsync();
+        Task<IReadOnlyList<IChannel>> GetChannelRangeAsync(int min, int max);
     }
 }

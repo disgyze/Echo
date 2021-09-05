@@ -11,7 +11,7 @@ namespace Echo.Xmpp.ElementModel
 		{
 			get
 			{
-				Enum.TryParse((string)Attribute("type"), true, out XmppPresenceKind kind);
+				Enum.TryParse((string?)Attribute("type"), true, out XmppPresenceKind kind);
 				return kind;
 			}
 			set => SetAttributeValue("type", value != XmppPresenceKind.None ? value.ToString().ToLower() : null);
@@ -21,7 +21,7 @@ namespace Echo.Xmpp.ElementModel
 		{
 			get
 			{
-				Enum.TryParse((string)Element(Name.Namespace + "show"), true, out XmppPresenceStatus status);
+				Enum.TryParse((string?)Element(Name.Namespace + "show"), true, out XmppPresenceStatus status);
 				return status;
 			}
 			set => SetElementValue(Name.Namespace + "show", value != XmppPresenceStatus.None ? value.ToString().ToLower() : null);
@@ -29,7 +29,7 @@ namespace Echo.Xmpp.ElementModel
 
 		public string? StatusText
 		{
-			get => (string)Element("status");
+			get => (string?)Element("status");
 			set => SetElementValue(Name.Namespace + "status", value);
 		}
 
@@ -37,10 +37,10 @@ namespace Echo.Xmpp.ElementModel
 		{
 			get
 			{
-				int.TryParse((string)Element("priority"), out int p);
+				int.TryParse((string?)Element("priority"), out int p);
 				return p;
 			}
-			set => SetElementValue("priority", value != 0 ? value : (object)null);
+			set => SetElementValue("priority", value != 0 ? value : null);
 		}
 
 		public XmppPresence() : base(ElementName)

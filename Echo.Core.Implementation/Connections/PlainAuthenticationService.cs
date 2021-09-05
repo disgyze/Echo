@@ -16,14 +16,14 @@ namespace Echo.Core.Connections
 
         protected override async ValueTask OnInitialStateAsync()
         {
-            await Connection!.SendAsync(new XmppSaslAuth(MechanismName));
+            await Connection!.Stream.WriteAsync(new XmppSaslAuth(MechanismName));
         }
 
         protected override async ValueTask OnChallengeStateAsync(XmppSaslChallenge saslChallenge)
         {
             var account = Connection!.Account;
 
-            await Connection.SendAsync(
+            await Connection.Stream.WriteAsync(
                 new XmppSaslResponse(
                     Convert.ToBase64String(
                         Encoding.UTF8.GetBytes(

@@ -6,13 +6,13 @@ namespace Echo.Core.Connections
 {
     public sealed class DnsResolutionSucceedEventArgs : EventArgs
     {
-        public IXmppConnection Client { get; }
+        public IXmppConnection Connection { get; }
         public string Host { get; }
         public IEnumerable<IPAddress> Addresses { get; }
 
-        public DnsResolutionSucceedEventArgs(IXmppConnection client, string host, IEnumerable<IPAddress> addresses)
+        public DnsResolutionSucceedEventArgs(IXmppConnection connection, string host, IEnumerable<IPAddress> addresses)
         {
-            Client = client;
+            Connection = connection;
             Host = host;
             Addresses = addresses;
         }

@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Echo.Core.Extensibility;
 using Echo.Foundation;
 using Echo.Xmpp.ElementModel;
-using EventResult = Echo.Core.Extensibility.EventResult;
 
 namespace Echo.Core.Connections
 {

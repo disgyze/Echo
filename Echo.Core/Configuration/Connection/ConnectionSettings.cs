@@ -25,9 +25,9 @@
             SecuritySettings = null;
         }
 
-        public ConnectionSettings(string? address, int port, int reconnectionAttempts, bool isReconnectionEnabled, bool useHostFromAccountAddress, ConnectionProxySettings? proxySettings, ConnectionSecuritySettings? securitySettings)
+        public ConnectionSettings(string? host, int port, int reconnectionAttempts, bool isReconnectionEnabled, bool useHostFromAccountAddress, ConnectionProxySettings? proxySettings, ConnectionSecuritySettings? securitySettings)
         {
-            Host = address;
+            Host = host;
             Port = port;
             ReconnectionAttemts = reconnectionAttempts;
             IsReconnectionEnabled = isReconnectionEnabled;

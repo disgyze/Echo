@@ -8,6 +8,7 @@ namespace Echo.Core.Configuration
 {
     public interface IConfiguration
     {
+        TSettings GetSettings<TSettings>();
         void UpdateSettings<TSettings>(TSettings settings);
     }
 }

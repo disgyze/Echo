@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Echo.Core.Configuration.Connection;
+using Echo.Core.Extensibility;
 using Echo.Core.UI;
 using Echo.Core.User;
 using Echo.Foundation;
@@ -116,16 +117,18 @@ namespace Echo.Core.Connections
 
         public bool IsDisposed => throw new NotImplementedException();
 
+        public IXmppStream Stream => throw new NotImplementedException();
+
         public XmppConnection(IAccount account, IWindow window, IXmppParser parser)
         {
 
         }
 
-        public async ValueTask<bool> OpenAsync(bool rejoinChannels = true, CancellationToken cancellationToken = default)
+        public async Task<bool> OpenAsync(bool forceReconnect = false, CancellationToken cancellationToken = default)
         {
             ThrowIfDisposed();
 
-            if (cancellationToken.IsCancellationRequested)
+            if (ConnectionState != ConnectionState.Closed || cancellationToken.IsCancellationRequested)
             {
                 return false;
             }
@@ -138,13 +141,13 @@ namespace Echo.Core.Connections
                 IPHostEntry dnsHostEntry = null!;
                 try
                 {
-                    dnsResolving.Publish(new DnsResolvingEventArgs(this, host));
+                    dnsResolving.PublishAsync(new DnsResolvingEventArgs(this, host));
                     dnsHostEntry = await nameResolver.ResolveAsync(host, cancellationTokenSource.Token);
-                    dnsResolved.Publish(new DnsResolvedEventArgs(dnsHostEntry.AddressList));
+                    dnsResolved.PublishAsync(new DnsResolvedEventArgs(dnsHostEntry.AddressList));
                 }
                 catch (SocketException e)
                 {
-                    dnsResolutionFailed.Publish(new DnsResolutionFailedEventArgs(this, host, e.Message, e.ErrorCode));
+                    dnsResolutionFailed.PublishAsync(new DnsResolutionFailedEventArgs(this, host, e.Message, e.ErrorCode));
                     return false;
                 }
 
@@ -173,13 +176,13 @@ namespace Echo.Core.Connections
             catch (SocketException e)
             {
                 Reset();
-                connectionFailed.Publish(new ConnectionFailedEventArgs(this, e.Message, e.ErrorCode));
+                await connectionFailed.PublishAsync(new ConnectionFailedEventArgs(this, e.Message, e.ErrorCode));
             }
 
             return false;
         }
 
-        public ValueTask<bool> DisconnectAsync(bool closeStream = true, CancellationToken cancellationToken = default)
+        public Task<bool> DisconnectAsync(bool closeStream = true, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -201,25 +204,25 @@ namespace Echo.Core.Connections
             return ValueTask.FromResult(true);
         }
 
-        public ValueTask<bool> StartStreamAsync(string? domain = null, CancellationToken cancellationToken = default)
+        public Task<bool> StartStreamAsync(string? domain = null, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public ValueTask<bool> CloseStreamAsync(CancellationToken cancellationToken = default)
+        public Task<bool> CloseStreamAsync(CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        private async ValueTask<IPHostEntry> ResolveAsync(string hostOrAddress, CancellationToken cancellationToken = default)
+        private ValueTask<IPHostEntry> ResolveAsync(string hostOrAddress, CancellationToken cancellationToken = default)
         {
-            return await nameResolver.ResolveAsync(hostOrAddress, cancellationToken);
+            return nameResolver.ResolveAsync(hostOrAddress, cancellationToken);
         }
 
         private void SetState(ConnectionState state)
         {
             connectionState = state;
-            connectionStateChanged.Publish(new ConnectionStateChangedEventArgs(this, state));
+            connectionStateChanged.PublishAsync(new ConnectionStateChangedEventArgs(this, state));
         }
 
         private void StartDataExchange(CancellationToken cancellationToken = default)
@@ -233,7 +236,7 @@ namespace Echo.Core.Connections
             {
                 if (error is SocketException socketError)
                 {
-                    connectionError.Publish(new ConnectionErrorEventArgs(this, socketError.Message, socketError.ErrorCode));
+                    connectionError.PublishAsync(new ConnectionErrorEventArgs(this, socketError.Message, socketError.ErrorCode));
                 }
             }
 
@@ -281,5 +284,44 @@ namespace Echo.Core.Connections
             }
         }
 
+        public Task<bool> OpenAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> CloseAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> SecureAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public object? GetService(Type serviceType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ValueTask CommandAsync(string text)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
+        public ValueTask DisposeAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> OpenAsync(bool forceReconnect = false)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

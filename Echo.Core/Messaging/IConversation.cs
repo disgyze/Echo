@@ -12,7 +12,7 @@ namespace Echo.Core.Messaging
         IWindow Window { get; }
         IXmppConnection Connection { get; }
        
-        ValueTask<bool> SendActionAsync(string text);
-        ValueTask<bool> SendMessageAsync(string text);
+        Task<bool> SendActionAsync(string text);
+        Task<bool> SendMessageAsync(string text);
     }
 }

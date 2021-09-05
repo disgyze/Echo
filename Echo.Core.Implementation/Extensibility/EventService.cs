@@ -12,7 +12,7 @@ namespace Echo.Core.Extensibility
 
         public IDisposable RegisterEvent<TEventArgs>(Func<TEventArgs, ValueTask<EventResult>> handler)
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

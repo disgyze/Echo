@@ -4,12 +4,12 @@ namespace Echo.Core.Connections
 {
     public sealed class ConnectionStateChangedEventArgs : EventArgs
     {
-        public IXmppConnection Client { get; }
+        public IXmppConnection Connection { get; }
         public ConnectionState State { get; }
 
-        public ConnectionStateChangedEventArgs(IXmppConnection client, ConnectionState state)
+        public ConnectionStateChangedEventArgs(IXmppConnection connection, ConnectionState state)
         {
-            Client = client;
+            Connection = connection;
             State = state;
         }
     }

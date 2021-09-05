@@ -12,12 +12,9 @@ using System.Linq;
 
 namespace Echo.Plugins.Default
 {
-    using CommandResult = Echo.Core.Extensibility.CommandResult;
-    using EventResult = Echo.Core.Extensibility.EventResult;
-
     public sealed class DefaultPlugin : IPlugin
     {
-        IWindowService windowService = null;
+        IWindowManager windowManager = null;
         IXmppConnectionManager connectionManager = null;
         IEventService eventService = null;
         ICommandService commandService = null;
@@ -87,7 +84,7 @@ namespace Echo.Plugins.Default
         {
             if (int.TryParse(c.Params.ParamAt(0), out int index))
             {
-                IWindow window = windowService.GetWindow(index);
+                IWindow window = windowManager.GetWindow(index);
 
                 if (window != null)
                 {
@@ -95,31 +92,32 @@ namespace Echo.Plugins.Default
                 }
                 else
                 {
-                    c.Window.Display.ShowOther("/window: Index out of range");
+                    c.Window.Display.ShowError("/window: Index out of range");
                 }
             }
             else
             {
-                c.Window.Display.ShowOther("/window: Invalid index");
+                c.Window.Display.ShowError("/window: Invalid index");
             }
             return ValueTask.FromResult(CommandResult.Stop);
         }
 
         private ValueTask<CommandResult> Close(CommandArgs c)
         {
-            windowService.ActiveWindow?.Close();
+            windowManager.ActiveWindow?.Close();
             return ValueTask.FromResult(CommandResult.Stop);
         }
 
         private async ValueTask<CommandResult> Me(CommandArgs c)
         {
-            IChannel channel = windowService.GetChannel(c.Window);
-
-            if (channel != null)
+            if (windowManager.GetConversation(c.Window) is IConversation conversation)
             {
-                await channel.SendActionAsync(c.Params);
+                await conversation.SendActionAsync(c.Params);
             }
-
+            else
+            {
+                c.Window.Display.ShowError("/me: Can only be called from a conversation window");
+            }
             return CommandResult.Stop;
         }
 
@@ -134,9 +132,7 @@ namespace Echo.Plugins.Default
                 return CommandResult.Stop;
             }
 
-            IMucChannel channel = windowService.GetChannel(c.Window) as IMucChannel;
-
-            if (channel != null)
+            if (windowManager.GetConversation(c.Window) is IMucChannel channel)
             {
                 var reason = c.Params.ParamOnwardAt(1);
                 await channel.KickAsync(nick, reason);
@@ -151,9 +147,7 @@ namespace Echo.Plugins.Default
 
         private async ValueTask<CommandResult> MassKick(CommandArgs c)
         {
-            IMucChannel channel = windowService.GetChannel(c.Window) as IMucChannel;
-            
-            if (channel != null)
+            if (windowManager.GetConversation(c.Window) is IMucChannel channel)
             {
                 string reason = c.Params.ParamOnwardAt(0);
                 IChannelMember member = null;
@@ -205,6 +199,22 @@ namespace Echo.Plugins.Default
             string address = c.Params.ParamAt(0);
 
             return CommandResult.Stop;
+        }
+
+        private ValueTask<CommandResult> MassEcho(CommandArgs c)
+        {
+            for (int i = 0; i < windowManager.Count; i++)
+            {
+                var window = windowManager.GetWindow(i);
+
+                if (window == null)
+                {
+                    break;
+                }
+
+                window.Display.ShowEcho(c.Params);
+            }
+            return ValueTask.FromResult(CommandResult.Stop);
         }
     }
 }

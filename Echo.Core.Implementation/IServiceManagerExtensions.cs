@@ -1,5 +1,7 @@
 ﻿using Echo.Core.Connections;
+using Echo.Core.Extensibility;
 using Echo.Core.UI;
+using Echo.Core.User;
 using Echo.Foundation;
 using Echo.Xmpp.Parser;
 
@@ -25,14 +27,17 @@ namespace Echo.Core
 
                 // XML parser
                 .RegisterInstance<IXmppElementFactory>(_ => new XmppElementFactory())
-                .RegisterInstance<IXmppParser>(serviceProvider => 
+                .RegisterInstance<IXmppParser>(serviceProvider =>
                     new XmppParser(
                         serviceProvider.GetService<IXmppElementFactory>()))
 
                 // Connection services
-                .RegisterSingleton<IXmppConnectionManager>(serviceProvider => 
-                    new XmppConnectionManager(
-                        serviceProvider.GetService<IEvent<ActiveConnectionChangedEventArgs>>()));
+                //.RegisterSingleton<IXmppConnectionManager>(serviceProvider =>
+                //    new XmppConnectionManager(
+                //        serviceProvider.GetService<IEvent<ActiveConnectionChangedEventArgs>>()))
+
+                .RegisterSingleton<IEventService>(_ => new EventService())
+                .RegisterSingleton<IAccountManager>(new AccountManager());
         }
     }
 }

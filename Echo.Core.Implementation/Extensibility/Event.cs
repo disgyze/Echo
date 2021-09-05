@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Immutable;
+using System.Threading.Tasks;
 
-namespace Echo.Foundation
+namespace Echo.Core.Extensibility
 {
     public sealed class Event<TEventArgs> : IEvent<TEventArgs> where TEventArgs : EventArgs
     {
@@ -10,10 +11,10 @@ namespace Echo.Foundation
         private sealed class Subscription : IDisposable
         {
             bool disposed = false;
-            Func<TEventArgs, EventResult> handler = null;
-            Action<Subscription> unsubscribe = null;
+            Func<TEventArgs, ValueTask<EventResult>> handler = null!;
+            Action<Subscription> unsubscribe = null!;
 
-            public Subscription(Func<TEventArgs, EventResult> handler, Action<Subscription> unsubscribe)
+            public Subscription(Func<TEventArgs, ValueTask<EventResult>> handler, Action<Subscription> unsubscribe)
             {
                 this.handler = handler;
                 this.unsubscribe = unsubscribe;
@@ -32,38 +33,46 @@ namespace Echo.Foundation
 
             private void Dispose(bool disposing)
             {
-                if (!disposed)
+                if (disposed)
                 {
-                    if (disposing)
-                    {
-                        unsubscribe(this);                        
-                    }
-                    disposed = true;
+                    return;
                 }
+
+                if (disposing)
+                {
+                    unsubscribe(this);
+                }
+
+                disposed = true;
             }
 
-            public EventResult Invoke(TEventArgs e)
+            public ValueTask<EventResult> Invoke(TEventArgs e)
             {
                 return handler.Invoke(e);
             }
         }
 
-        public void Publish(TEventArgs e)
+        public async ValueTask<bool> PublishAsync(TEventArgs e)
         {
-            ImmutableArray<Subscription> temp = subscriptionList;
+            var temp = subscriptionList;
 
             for (int i = 0; i < temp.Length; i++)
             {
-                if (temp[i].Invoke(e) == EventResult.Stop)
+                var task = temp[i].Invoke(e);
+                var result = task.IsCompleted ? task.GetAwaiter().GetResult() : await task.AsTask();
+
+                if (result == EventResult.Stop)
                 {
-                    break;
+                    return false;
                 }
             }
+
+            return true;
         }
 
-        public IDisposable Subscribe(Func<TEventArgs, EventResult> handler)
+        public IDisposable Subscribe(Func<TEventArgs, ValueTask<EventResult>> handler)
         {
-            var subscription = new Subscription(handler ?? throw new ArgumentNullException(nameof(handler)), self => RemoveSubscription(self));
+            var subscription = new Subscription(handler ?? throw new ArgumentNullException(nameof(handler)), RemoveSubscription);
             AddSubscription(subscription);
             return subscription;
         }

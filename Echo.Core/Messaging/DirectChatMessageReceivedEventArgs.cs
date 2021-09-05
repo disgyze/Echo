@@ -5,9 +5,9 @@ namespace Echo.Core.Messaging
     public sealed class DirectChatMessageReceivedEventArgs : EventArgs
     {
         public IDirectChat DirectChat { get; }
-        public ChatMessage Message { get; }
+        public string Message { get; }
         
-        public DirectChatMessageReceivedEventArgs(IDirectChat directChat, ChatMessage message)
+        public DirectChatMessageReceivedEventArgs(IDirectChat directChat, string message)
         {
             DirectChat = directChat;
             Message = message;

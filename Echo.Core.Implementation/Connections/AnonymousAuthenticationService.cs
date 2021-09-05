@@ -15,7 +15,7 @@ namespace Echo.Core.Connections
 
         protected override async ValueTask OnInitialStateAsync()
         {
-            await Connection!.SendAsync(new XmppSaslAuth(MechanismName));
+            await Connection!.Stream.WriteAsync(new XmppSaslAuth(MechanismName));
         }
 
         protected override ValueTask OnChallengeStateAsync(XmppSaslChallenge saslChallenge)
