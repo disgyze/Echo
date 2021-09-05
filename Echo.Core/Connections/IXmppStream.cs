@@ -5,8 +5,8 @@ namespace Echo.Core.Connections
 {
     public interface IXmppStream
     {
-        Task WriteAsync(XElement element);
-        Task OpenAsync(string? domain = null);
-        Task CloseAsync();
+        ValueTask WriteAsync(XElement element);
+        ValueTask OpenAsync(string domain);
+        ValueTask CloseAsync();
     }
 }
