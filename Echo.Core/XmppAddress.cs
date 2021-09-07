@@ -23,11 +23,11 @@ namespace Echo.Core
             Resource = null;
         }
 
-        public XmppAddress(string? name, string host, string? resource = "", string? query = "") : this(host)
+        public XmppAddress(string name, string host, string? resource = "") : this(host)
         {
-            if (host == string.Empty)
+            if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentException("Cannot be empty", nameof(host));
+                throw new ArgumentException(nameof(name));
             }
 
             Host = host;
@@ -61,17 +61,18 @@ namespace Echo.Core
             int slashIndex = s.IndexOf('/', Math.Max(atIndex, 0));
             int exclamationMarkIndex = s.IndexOf('?', Math.Max(slashIndex, 0));
 
-            string? name = null;
-            string? host = null;
-            string? resource = null;
-
-            name = atIndex > 0 ? s.Substring(Math.Max(schemeOffset - 1, 0), atIndex - (schemeOffset > 0 ? schemeOffset - 1 : 0)) : null;
-            host = slashIndex > 0 ? s.Substring(atIndex + 1, slashIndex - atIndex - 1) : s.Substring(atIndex + 1, s.Length - atIndex - 1);
-            resource = slashIndex > 0 ? s.Substring(slashIndex + 1, (exclamationMarkIndex > 0 ? exclamationMarkIndex - slashIndex : s.Length - slashIndex) - 1) : null;
+            string? name = atIndex > 0 ? s.Substring(Math.Max(schemeOffset - 1, 0), atIndex - (schemeOffset > 0 ? schemeOffset - 1 : 0)) : null;
+            string host = slashIndex > 0 ? s.Substring(atIndex + 1, slashIndex - atIndex - 1) : s.Substring(atIndex + 1, s.Length - atIndex - 1);
+            string? resource = slashIndex > 0 ? s.Substring(slashIndex + 1, (exclamationMarkIndex > 0 ? exclamationMarkIndex - slashIndex : s.Length - slashIndex) - 1) : null;
 
             if (host == null)
             {
                 throw new ArgumentException("Invalud URI", nameof(s));
+            }
+
+            if (name == null)
+            {
+                return new XmppAddress(host);
             }
 
             return new XmppAddress(name, host, resource);
@@ -138,6 +139,10 @@ namespace Echo.Core
 
         public XmppAddress ToBare()
         {
+            if (Name == null)
+            {
+                throw new InvalidOperationException();
+            }
             return new XmppAddress(Name, Host);
         }
 
