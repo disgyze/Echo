@@ -7,22 +7,24 @@ namespace Echo.Core
     {
         public static readonly string SchemeName = "xmpp";
 
-        public string Name { get; }
+        public string? Name { get; }
         public string Host { get; }
-        public string Resource { get; }
-        public string Query { get; }
+        public string? Resource { get; }
 
-        public XmppAddress(string host) : this(string.Empty, host)
+        public XmppAddress(string host)
         {
-        }
-
-        public XmppAddress(string? name, string host, string? resource = "", string? query = "")
-        {
-            if (host == null)
+            if (string.IsNullOrWhiteSpace(host))
             {
-                throw new ArgumentNullException(nameof(host));
+                throw new ArgumentException(nameof(host));
             }
 
+            Host = host;
+            Name = null;
+            Resource = null;
+        }
+
+        public XmppAddress(string? name, string host, string? resource = "", string? query = "") : this(host)
+        {
             if (host == string.Empty)
             {
                 throw new ArgumentException("Cannot be empty", nameof(host));
@@ -31,7 +33,6 @@ namespace Echo.Core
             Host = host;
             Name = name ?? string.Empty;
             Resource = resource ?? string.Empty;
-            Query = query ?? string.Empty;
         }
 
         public static XmppAddress Create(string s)
@@ -162,7 +163,7 @@ namespace Echo.Core
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Name, Host, Resource, Query);
+            return HashCode.Combine(Name, Host, Resource);
         }
 
         private string GetFormattedAddress(bool includeResource = true)
@@ -181,12 +182,6 @@ namespace Echo.Core
             {
                 result.Append('/');
                 result.Append(Resource);
-            }
-
-            if (!string.IsNullOrEmpty(Query))
-            {
-                result.Append('?');
-                result.Append(Query);
             }
 
             return result.ToString();
