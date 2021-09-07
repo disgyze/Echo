@@ -41,9 +41,9 @@ namespace Echo.Core.Connections
             return connectionIndex >= 0 && connectionIndex < temp.Length ? temp[connectionIndex] : null;
         }
 
-        public IXmppConnection? GetConnection(XmppUri accountAddress)
+        public IXmppConnection? GetConnection(XmppAddress accountAddress)
         {
-            return accountAddress != null ? connectionList.FirstOrDefault(connection => XmppUri.Equals(connection.Account.Address, accountAddress, XmppUriComparison.Bare)) : null;
+            return connectionList.FirstOrDefault(connection => connection.Account.Address.EqualsBare(accountAddress));
         }
 
         public bool SetActiveConnection(IXmppConnection? connection)

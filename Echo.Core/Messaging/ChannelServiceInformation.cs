@@ -2,10 +2,10 @@
 {
     public readonly struct ChannelServiceInformation
     {
-        public XmppUri Address { get; }
+        public XmppAddress Address { get; }
         public ChannelServiceKind Kind { get; }
 
-        public ChannelServiceInformation(XmppUri address, ChannelServiceKind kind)
+        public ChannelServiceInformation(XmppAddress address, ChannelServiceKind kind)
         {
             Address = address;
             Kind = kind;

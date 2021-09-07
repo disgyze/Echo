@@ -6,6 +6,6 @@
         IXmppConnection? ActiveConnection { get; }
 
         IXmppConnection? GetConnection(int connectionIndex);
-        IXmppConnection? GetConnection(XmppUri accountAddress);
+        IXmppConnection? GetConnection(XmppAddress accountAddress);
     }
 }

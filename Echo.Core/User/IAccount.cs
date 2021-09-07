@@ -5,7 +5,7 @@ namespace Echo.Core.User
     public interface IAccount
     {
         Guid Id { get; }
-        XmppUri Address { get; }
+        XmppAddress Address { get; }
         string Password { get; }
         bool IsAuthenticated { get; }
         bool IsMetaAccount { get; }

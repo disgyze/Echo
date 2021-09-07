@@ -13,7 +13,7 @@ namespace Echo.Core.User
 
         public int Count => accountList.Length;
 
-        public IAccount? CreateAccount(XmppUri address, string? password = null)
+        public IAccount? CreateAccount(XmppAddress address, string? password = null)
         {
             return new Account(address, password, false, false, false, new Presence());
         }
@@ -28,7 +28,7 @@ namespace Echo.Core.User
             throw new NotImplementedException();
         }
 
-        public IAccount? GetAccount(XmppUri accountAddress)
+        public IAccount? GetAccount(XmppAddress accountAddress)
         {
             throw new NotImplementedException();
         }
@@ -51,7 +51,7 @@ namespace Echo.Core.User
             throw new NotImplementedException();
         }
 
-        public void ShowAccountUI(XmppUri accountAddress)
+        public void ShowAccountUI(XmppAddress accountAddress)
         {
             throw new NotImplementedException();
         }

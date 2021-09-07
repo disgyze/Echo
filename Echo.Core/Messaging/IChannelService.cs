@@ -8,6 +8,6 @@ namespace Echo.Core.Messaging
 
         IChannel? GetChannel(int channelIndex);
         IChannel? GetChannel(Guid channelId);
-        IChannel? GetChannel(XmppUri channelAddress);
+        IChannel? GetChannel(XmppAddress channelAddress);
     }
 }

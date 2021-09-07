@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Echo.Xmpp
+namespace Echo.Core
 {
     public sealed class XmppAddress : IEquatable<XmppAddress>
     {
@@ -63,43 +63,17 @@ namespace Echo.Xmpp
             string? name = null;
             string? host = null;
             string? resource = null;
-            string? query = null;
-
-            //if (atIndex > 0)
-            //         {
-            //	if (schemeOffset > 0)
-            //             {
-            //		name = s.Substring(schemeOffset - 1, atIndex - schemeOffset + 1);
-            //             }
-            //             else
-            //             {
-            //		name = s.Substring(0, atIndex);
-            //             }
-            //         }
-
-            //if (slashIndex > 0)
-            //         {
-            //	if (atIndex > 0)
-            //             {
-            //		server = s.Substring(atIndex + 1, slashIndex - atIndex - 1);
-            //             }
-            //             else
-            //             {
-            //		server = s.Substring(0, s.Length - atIndex - 1);
-            //             }
-            //         }
 
             name = atIndex > 0 ? s.Substring(Math.Max(schemeOffset - 1, 0), atIndex - (schemeOffset > 0 ? schemeOffset - 1 : 0)) : null;
             host = slashIndex > 0 ? s.Substring(atIndex + 1, slashIndex - atIndex - 1) : s.Substring(atIndex + 1, s.Length - atIndex - 1);
             resource = slashIndex > 0 ? s.Substring(slashIndex + 1, (exclamationMarkIndex > 0 ? exclamationMarkIndex - slashIndex : s.Length - slashIndex) - 1) : null;
-            query = exclamationMarkIndex > 0 ? s.Substring(exclamationMarkIndex + 1, s.Length - exclamationMarkIndex - 1) : null;
 
             if (host == null)
             {
                 throw new ArgumentException("Invalud URI", nameof(s));
             }
 
-            return new XmppAddress(name, host, resource, query);
+            return new XmppAddress(name, host, resource);
         }
 
         public static bool TryCreate(string s, out XmppAddress? address)

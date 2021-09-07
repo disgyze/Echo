@@ -2,7 +2,7 @@
 {
     public interface IDirectChat : IConversation
     {
-        XmppUri Address { get; }
+        XmppAddress Address { get; }
         ChatState State { get; }
     }
 }

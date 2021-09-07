@@ -8,11 +8,11 @@ namespace Echo.Core.User
 
         IAccount? GetAccount(int accountIndex);
         IAccount? GetAccount(Guid accountId);
-        IAccount? GetAccount(XmppUri accountAddress);
-        IAccount? CreateAccount(XmppUri address, string? password = null);
+        IAccount? GetAccount(XmppAddress accountAddress);
+        IAccount? CreateAccount(XmppAddress address, string? password = null);
         IAccount? UpdateAccount(IAccount account);
 
-        void ShowAccountUI(XmppUri accountAddress);
+        void ShowAccountUI(XmppAddress accountAddress);
         void ShowAccountRegistrationUI();
     }
 }

@@ -6,12 +6,12 @@ namespace Echo.Core.Messaging
     {
         int MemberCount { get; }
         bool IsJoined { get; }
-        XmppUri Address { get; }
+        XmppAddress Address { get; }
         IChannelMember Me { get; }
 
         IChannelMember? GetMember(int index);
         IChannelMember? GetMember(string nick);
-        IChannelMember? GetMember(XmppUri address);
+        IChannelMember? GetMember(XmppAddress address);
         ValueTask<bool> JoinAsync(string? password = null);
         ValueTask<bool> LeaveAsync(string? reason = null);
     }

@@ -3,7 +3,7 @@
     public interface IChannelMember
     {
         IChannel Channel { get; }
-        XmppUri Address { get; }
+        XmppAddress Address { get; }
         string Nick { get; }
     }
 }

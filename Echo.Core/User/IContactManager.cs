@@ -11,7 +11,7 @@ namespace Echo.Core.User
 
         IContact? GetContact(int contactIndex);
         IContact? GetContact(Guid contactId);
-        IContact? GetContact(XmppUri contactAddress);
+        IContact? GetContact(XmppAddress contactAddress);
         ValueTask<bool> SyncAsync();
     }
 }

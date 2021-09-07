@@ -2,7 +2,7 @@
 {
     public interface IUserConfigurationStore
     {
-        AccountSettings? Get(XmppUri accountAddress);
-        AccountSettings? GetOrCreate(XmppUri accountAddress);
+        AccountSettings? Get(XmppAddress accountAddress);
+        AccountSettings? GetOrCreate(XmppAddress accountAddress);
     }
 }

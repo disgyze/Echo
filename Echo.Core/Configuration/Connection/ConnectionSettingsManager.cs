@@ -2,6 +2,6 @@
 {
     public abstract class ConnectionSettingsManager
     {
-        public abstract ConnectionSecuritySettings GetForAccount(XmppUri accountUri);
+        public abstract ConnectionSecuritySettings GetForAccount(XmppAddress accountAddress);
     }
 }
