@@ -37,7 +37,7 @@ namespace Echo.Core
                 //        serviceProvider.GetService<IEvent<ActiveConnectionChangedEventArgs>>()))
 
                 .RegisterSingleton<IEventService>(_ => new EventService())
-                .RegisterSingleton<IAccountManager>(new AccountManager());
+                .RegisterSingleton<IAccountManager>(new DefaultAccountManager());
         }
     }
 }

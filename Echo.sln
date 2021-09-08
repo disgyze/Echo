@@ -31,13 +31,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Implementation", "Implementation", "{E57B6571-DD89-476D-B676-EE81014F379F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Echo.Core.Implementation", "Echo.Core.Implementation\Echo.Core.Implementation.csproj", "{F45C9116-A19C-4291-A86C-CAD904ED242F}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "6. Foundation", "6. Foundation", "{3E3AE478-707A-4A7C-B2C1-E99DFAE98FDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Echo.Core.Application", "Echo.Core.Application\Echo.Core.Application.csproj", "{4017A77D-FB7E-4B92-918C-C53F487F85CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Echo.Core.Application", "Echo.Core.Application\Echo.Core.Application.csproj", "{4017A77D-FB7E-4B92-918C-C53F487F85CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Echo.Core.Application.Implementation", "Echo.Core.Application.Implementation\Echo.Core.Application.Implementation.csproj", "{1E184963-0F5C-41E8-93B8-A3199CD678A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Echo.Core.Application.Implementation", "Echo.Core.Application.Implementation\Echo.Core.Application.Implementation.csproj", "{1E184963-0F5C-41E8-93B8-A3199CD678A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,10 +67,6 @@ Global
 		{822D9346-7488-4BCF-975D-5DF4D5F1F68D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{822D9346-7488-4BCF-975D-5DF4D5F1F68D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{822D9346-7488-4BCF-975D-5DF4D5F1F68D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F45C9116-A19C-4291-A86C-CAD904ED242F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F45C9116-A19C-4291-A86C-CAD904ED242F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F45C9116-A19C-4291-A86C-CAD904ED242F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F45C9116-A19C-4291-A86C-CAD904ED242F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4017A77D-FB7E-4B92-918C-C53F487F85CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4017A77D-FB7E-4B92-918C-C53F487F85CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4017A77D-FB7E-4B92-918C-C53F487F85CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -94,7 +88,6 @@ Global
 		{9B5C9FBB-EFA7-4CE1-948E-AF40A53C27A8} = {4071FB1B-95E7-41D9-B736-12041C371263}
 		{69C27D1D-ACC2-4A55-90B4-ACCD3D186E38} = {358BB2E3-32C3-4873-A292-51405C3BC992}
 		{E57B6571-DD89-476D-B676-EE81014F379F} = {358BB2E3-32C3-4873-A292-51405C3BC992}
-		{F45C9116-A19C-4291-A86C-CAD904ED242F} = {E57B6571-DD89-476D-B676-EE81014F379F}
 		{4017A77D-FB7E-4B92-918C-C53F487F85CC} = {BCF1864A-05B9-4880-8371-406362C827AF}
 		{1E184963-0F5C-41E8-93B8-A3199CD678A6} = {E57B6571-DD89-476D-B676-EE81014F379F}
 	EndGlobalSection
