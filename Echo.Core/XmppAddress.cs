@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Echo.Core
 {
-    public sealed class XmppAddress : IEquatable<XmppAddress>
+    public readonly struct XmppAddress : IEquatable<XmppAddress>
     {
         public static readonly string SchemeName = "xmpp";
 
@@ -70,7 +70,7 @@ namespace Echo.Core
                 throw new ArgumentException("Invalud URI", nameof(s));
             }
 
-            if (name == null)
+            if (string.IsNullOrEmpty(name))
             {
                 return new XmppAddress(host);
             }
@@ -97,33 +97,13 @@ namespace Echo.Core
             return obj is XmppAddress other && this.Equals(other);
         }
 
-        public bool Equals(XmppAddress? other)
+        public bool Equals(XmppAddress other)
         {
-            if (object.ReferenceEquals(other, null))
-            {
-                return false;
-            }
-
-            if (object.ReferenceEquals(this, other))
-            {
-                return true;
-            }
-
             return string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase) && string.Equals(Host, other.Host, StringComparison.OrdinalIgnoreCase) && string.Equals(Resource, other.Resource, StringComparison.OrdinalIgnoreCase);
         }
 
-        public bool EqualsBare(XmppAddress? other)
+        public bool EqualsBare(XmppAddress other)
         {
-            if (object.ReferenceEquals(other, null))
-            {
-                return false;
-            }
-
-            if (object.ReferenceEquals(this, other))
-            {
-                return true;
-            }
-
             return string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase) && string.Equals(Host, other.Host, StringComparison.OrdinalIgnoreCase);
         }
 
