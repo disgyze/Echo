@@ -8,10 +8,6 @@ namespace Echo.Core.User
         XmppAddress Address { get; }
         string Password { get; }
         bool IsAuthenticated { get; }
-        bool IsMetaAccount { get; }
-        bool IsLinked { get; }
         Presence Presence { get; }
-
-        IAccount WithPresence(Presence presence);
     }
 }
