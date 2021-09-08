@@ -9,7 +9,6 @@ namespace Echo.Core.User
         IAccount? GetAccount(int accountIndex);
         IAccount? GetAccount(Guid accountId);
         IAccount? GetAccount(XmppAddress accountAddress);
-        IAccount? UpdateAccount(IAccount account);
         void ShowAccountUI(XmppAddress accountAddress);
         void ShowAccountRegistrationUI();
     }

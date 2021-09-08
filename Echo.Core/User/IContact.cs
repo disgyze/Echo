@@ -7,8 +7,6 @@ namespace Echo.Core.User
     {
         Guid Id { get; }
         XmppAddress Address { get; }
-        bool IsMetaContact { get; }
-        bool IsLinked { get; }
         IAccount Account { get; }
         IReadOnlyList<string> Groups { get; }
     }
