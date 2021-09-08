@@ -7,7 +7,7 @@ using Echo.Core.User;
 
 namespace Echo.Core.Connections
 {
-    public sealed class XmppConnectionManager : IXmppConnectionManager
+    public sealed class DefaultXmppConnectionManager : IXmppConnectionManager
     {
         IXmppConnection? activeConnection = null;
         IXmppConnectionFactory connectionFactory;
@@ -19,7 +19,7 @@ namespace Echo.Core.Connections
         public int Count => connectionList.Length;
         public IXmppConnection? ActiveConnection => activeConnection;
 
-        public XmppConnectionManager(IXmppConnectionFactory connectionFactory,
+        public DefaultXmppConnectionManager(IXmppConnectionFactory connectionFactory,
                                      IEventPublisher<ConnectionAddedEventArgs> connectionAdded,
                                      IEventPublisher<ConnectionRemovedEventArgs> connectionRemoved,
                                      IEventPublisher<ActiveConnectionChangedEventArgs> activeConnectionChanged,

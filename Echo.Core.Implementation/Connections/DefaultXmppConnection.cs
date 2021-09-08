@@ -17,7 +17,7 @@ using Echo.Xmpp.Parser;
 
 namespace Echo.Core.Connections
 {
-    public sealed class XmppConnection : IXmppConnection, IDisposable, IAsyncDisposable
+    public sealed class DefaultXmppConnection : IXmppConnection, IDisposable, IAsyncDisposable
     {
         bool disposed = false;
         Guid id = default;
@@ -119,7 +119,7 @@ namespace Echo.Core.Connections
 
         public IXmppStream Stream => throw new NotImplementedException();
 
-        public XmppConnection(IAccount account, IWindow window, IXmppParser parser)
+        public DefaultXmppConnection(IAccount account, IWindow window, IXmppParser parser)
         {
 
         }
@@ -280,7 +280,7 @@ namespace Echo.Core.Connections
         {
             if (disposed)
             {
-                throw new ObjectDisposedException(nameof(XmppConnection));
+                throw new ObjectDisposedException(nameof(DefaultXmppConnection));
             }
         }
 

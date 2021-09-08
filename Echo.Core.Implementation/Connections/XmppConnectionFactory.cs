@@ -14,7 +14,7 @@ namespace Echo.Core.Connections
 
         public IXmppConnection Create(IAccount account)
         {
-            return new XmppConnection(account, null, null);
+            return new DefaultXmppConnection(account, null, null);
         }
     }
 }
