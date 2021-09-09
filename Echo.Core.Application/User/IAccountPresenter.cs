@@ -2,6 +2,6 @@
 {
     public interface IAccountPresenter
     {
-        void ShowUI();
+        void ShowUI(XmppAddress accountAddress);
     }
 }

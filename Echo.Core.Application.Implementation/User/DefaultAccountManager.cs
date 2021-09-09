@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Echo.Core.Extensibility;
 
 namespace Echo.Core.User
 {
@@ -12,8 +10,21 @@ namespace Echo.Core.User
         ImmutableArray<Account> accountList = ImmutableArray<Account>.Empty;
         IAccountPresenter accountPresenter;
         IAccountRegistrationPresenter accountRegistrationPresenter;
+        IEventPublisher<AccountAddedEventArgs> accountAdded;
+        IEventPublisher<AccountRemovedEventArgs> accountRemoved;
 
         public override int Count => accountList.Length;
+
+        public DefaultAccountManager(IAccountPresenter accountPresenter,
+                                     IAccountRegistrationPresenter accountRegistrationPresenter,
+                                     IEventPublisher<AccountAddedEventArgs> accountAdded,
+                                     IEventPublisher<AccountRemovedEventArgs> accountRemoved)
+        {
+            this.accountPresenter = accountPresenter ?? throw new ArgumentNullException(nameof(accountPresenter));
+            this.accountRegistrationPresenter = accountRegistrationPresenter ?? throw new ArgumentNullException(nameof(accountRegistrationPresenter));
+            this.accountAdded = accountAdded ?? throw new ArgumentNullException(nameof(accountAdded));
+            this.accountRemoved = accountRemoved ?? throw new ArgumentNullException(nameof(accountRemoved));
+        }
 
         public override Account? GetAccount(int accountIndex)
         {
@@ -23,32 +34,38 @@ namespace Echo.Core.User
 
         public override Account? GetAccount(Guid accountId)
         {
-            throw new NotImplementedException();
+            return accountList.FirstOrDefault(account => account.Id == accountId);
         }
 
         public override Account? GetAccount(XmppAddress accountAddress)
         {
-            throw new NotImplementedException();
+            return accountList.FirstOrDefault(account => account.Address.EqualsBare(accountAddress));
         }
 
         public override void Add(Account account)
         {
-            throw new NotImplementedException();
+            if (ImmutableInterlocked.Update(ref accountList, accountList => accountList.Add(account)))
+            {
+                accountAdded.PublishAsync(new AccountAddedEventArgs(account));
+            }
         }
 
         public override void Remove(Account account)
         {
-            throw new NotImplementedException();
+            if (ImmutableInterlocked.Update(ref accountList, accountList => accountList.Remove(account)))
+            {
+                accountRemoved.PublishAsync(new AccountRemovedEventArgs(account));
+            }
         }
 
         public override void ShowAccountRegistrationUI()
         {
-
+            accountRegistrationPresenter.ShowUI();
         }
 
         public override void ShowAccountUI(XmppAddress accountAddress)
         {
-            throw new NotImplementedException();
+            accountPresenter.ShowUI(accountAddress);
         }
     }
 }
