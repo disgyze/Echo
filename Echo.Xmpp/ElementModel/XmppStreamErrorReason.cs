@@ -1,0 +1,30 @@
+﻿namespace Echo.Xmpp.ElementModel
+{
+    public enum XmppStreamErrorReason
+	{
+		Unknown,
+		BadXml,
+		InvalidNamespace,
+		InvalidNamespacePrefix,
+		InvalidSender,
+		HostUnknown,
+		HostGone,
+		Conflict,
+		ConnectionTimeout,
+		ImproperAddressing,
+		InternalServerError,
+		NotAuthorized,
+		PolicyViolation,
+		RemoteConnectionFailed,
+		Reset,
+		ResourceConstraint,
+		RestrictedXml,
+		SeeOtherHost,
+		SystemShutdown,
+		UnsupportedEncoding,
+		UnsupportedFeature,
+		UnsupportedStanzaType,
+		UnsupportedVersion,
+		UndefinedCondition
+	}
+}

@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Echo.Foundation\Echo.Foundation.csproj" />
+        <ProjectReference Include="..\Echo.Xmpp\Echo.Xmpp.csproj" />
+        <InternalsVisibleTo Include="Echo.Demo" />
+        <InternalsVisibleTo Include="Echo.Core.Application.Implementation" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,10 @@
+body {
+    padding: 0;
+    margin: 0;
+    user-select: none;
+    overflow: hidden;
+}
+
+:root {
+    color-scheme: light dark;
+}

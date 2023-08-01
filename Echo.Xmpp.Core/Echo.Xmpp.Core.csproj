@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Echo.Xmpp\Echo.Xmpp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Sasl\" />
+    <Folder Include="Session\" />
+    <Folder Include="Stream\" />
+    <Folder Include="Tls\" />
+  </ItemGroup>
+
+</Project>

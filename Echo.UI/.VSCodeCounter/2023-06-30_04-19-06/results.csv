@@ -1,0 +1,42 @@
+"filename", "language", "JSON with Comments", "CSS", "YAML", "JSON", "TypeScript", "TypeScript JSX", "HTML", "comment", "blank", "total"
+"d:\Development\Echo\Echo.UI\Web\.yarnrc.yml", "YAML", 0, 0, 1, 0, 0, 0, 0, 0, 1, 2
+"d:\Development\Echo\Echo.UI\Web\Echo.code-workspace", "JSON with Comments", 7, 0, 0, 0, 0, 0, 0, 0, 0, 7
+"d:\Development\Echo\Echo.UI\Web\index.css", "CSS", 0, 9, 0, 0, 0, 0, 0, 0, 1, 10
+"d:\Development\Echo\Echo.UI\Web\index.html", "HTML", 0, 0, 0, 0, 0, 0, 13, 0, 3, 16
+"d:\Development\Echo\Echo.UI\Web\package-lock.json", "JSON", 0, 0, 0, 4334, 0, 0, 0, 0, 1, 4335
+"d:\Development\Echo\Echo.UI\Web\package.json", "JSON", 0, 0, 0, 25, 0, 0, 0, 0, 1, 26
+"d:\Development\Echo\Echo.UI\Web\src\App.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 498, 0, 100, 36, 634
+"d:\Development\Echo\Echo.UI\Web\src\components\Scroller\Scroller.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 17, 0, 1, 4, 22
+"d:\Development\Echo\Echo.UI\Web\src\components\Scroller\index.ts", "TypeScript", 0, 0, 0, 0, 1, 0, 0, 0, 0, 1
+"d:\Development\Echo\Echo.UI\Web\src\core\connection\connection.ts", "TypeScript", 0, 0, 0, 0, 34, 0, 0, 0, 7, 41
+"d:\Development\Echo\Echo.UI\Web\src\core\connection\index.ts", "TypeScript", 0, 0, 0, 0, 1, 0, 0, 0, 0, 1
+"d:\Development\Echo\Echo.UI\Web\src\core\core.ts", "TypeScript", 0, 0, 0, 0, 7, 0, 0, 0, 0, 7
+"d:\Development\Echo\Echo.UI\Web\src\core\event.ts", "TypeScript", 0, 0, 0, 0, 33, 0, 0, 0, 9, 42
+"d:\Development\Echo\Echo.UI\Web\src\core\index.ts", "TypeScript", 0, 0, 0, 0, 3, 0, 0, 0, 0, 3
+"d:\Development\Echo\Echo.UI\Web\src\core\messaging\index.ts", "TypeScript", 0, 0, 0, 0, 1, 0, 0, 0, 0, 1
+"d:\Development\Echo\Echo.UI\Web\src\core\messaging\messaging.ts", "TypeScript", 0, 0, 0, 0, 53, 0, 0, 0, 12, 65
+"d:\Development\Echo\Echo.UI\Web\src\core\serviceManager.ts", "TypeScript", 0, 0, 0, 0, 24, 0, 0, 0, 7, 31
+"d:\Development\Echo\Echo.UI\Web\src\core\stringUtils.ts", "TypeScript", 0, 0, 0, 0, 32, 0, 0, 0, 5, 37
+"d:\Development\Echo\Echo.UI\Web\src\core\user\index.ts", "TypeScript", 0, 0, 0, 0, 1, 0, 0, 0, 0, 1
+"d:\Development\Echo\Echo.UI\Web\src\core\user\native\index.ts", "TypeScript", 0, 0, 0, 0, 1, 0, 0, 0, 0, 1
+"d:\Development\Echo\Echo.UI\Web\src\core\user\native\native.ts", "TypeScript", 0, 0, 0, 0, 56, 0, 0, 0, 16, 72
+"d:\Development\Echo\Echo.UI\Web\src\core\user\user.ts", "TypeScript", 0, 0, 0, 0, 104, 0, 0, 0, 22, 126
+"d:\Development\Echo\Echo.UI\Web\src\index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 25, 0, 5, 6, 36
+"d:\Development\Echo\Echo.UI\Web\src\ui\Account\Creation\AccountCreationDialog.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 79, 0, 0, 10, 89
+"d:\Development\Echo\Echo.UI\Web\src\ui\Contacts\ContactList.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 191, 0, 16, 36, 243
+"d:\Development\Echo\Echo.UI\Web\src\ui\Contacts\ContactListItem.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 65, 0, 0, 12, 77
+"d:\Development\Echo\Echo.UI\Web\src\ui\Contacts\index.ts", "TypeScript", 0, 0, 0, 0, 2, 0, 0, 0, 0, 2
+"d:\Development\Echo\Echo.UI\Web\src\ui\Contacts\useFetchContacts.ts", "TypeScript", 0, 0, 0, 0, 20, 0, 0, 0, 6, 26
+"d:\Development\Echo\Echo.UI\Web\src\ui\Messaging\ConversationMessageItem.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 25, 0, 8, 8, 41
+"d:\Development\Echo\Echo.UI\Web\src\ui\Messaging\KickDialog.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 123, 0, 0, 23, 146
+"d:\Development\Echo\Echo.UI\Web\src\ui\Shell\ComposeBox.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 112, 0, 0, 11, 123
+"d:\Development\Echo\Echo.UI\Web\src\ui\Shell\Shell.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 3, 0, 0, 0, 3
+"d:\Development\Echo\Echo.UI\Web\src\ui\Shell\index.ts", "TypeScript", 0, 0, 0, 0, 1, 0, 0, 0, 0, 1
+"d:\Development\Echo\Echo.UI\Web\src\ui\useServiceProviderContext.ts", "TypeScript", 0, 0, 0, 0, 17, 0, 0, 0, 3, 20
+"d:\Development\Echo\Echo.UI\Web\src\utils\ComposableProvider.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 17, 0, 0, 4, 21
+"d:\Development\Echo\Echo.UI\Web\src\vite-env.d.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 0, 1, 1, 2
+"d:\Development\Echo\Echo.UI\Web\tsconfig.json", "JSON with Comments", 34, 0, 0, 0, 0, 0, 0, 0, 0, 34
+"d:\Development\Echo\Echo.UI\Web\tsconfig.node.json", "JSON", 0, 0, 0, 9, 0, 0, 0, 0, 1, 10
+"d:\Development\Echo\Echo.UI\Web\vite.config.ts", "TypeScript", 0, 0, 0, 0, 5, 0, 0, 1, 2, 8
+"d:\Development\Echo\Echo.UI\package-lock.json", "JSON", 0, 0, 0, 6, 0, 0, 0, 0, 1, 7
+"Total", "-", 41, 9, 1, 4374, 396, 1155, 13, 132, 249, 6370
